@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    --main-bg-color: black;
+    --secondary-bg-color: #212529;
+    --tertiary-bg-color: #495057;
+    --text-color: #adb5bd;
+}
+
+.body-class{
+    background-color: var(--main-bg-color);
+    color: var(--text-color);
+}
