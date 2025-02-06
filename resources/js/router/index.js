@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../Views/HomeView.vue';
 import BookDetailView from '../Views/BookDetailView.vue';
 import CreateBookView from '../Views/CreateBookView.vue';
+import CreatePatronView from '../Views/CreatePatronView.vue';
 import NotFoundView from '../Views/NotFoundView.vue';
 
 const routes = [
@@ -20,6 +21,11 @@ const routes = [
         path: '/books/create',
         name: 'book-create',
         component: CreateBookView,
+    },
+    {
+        path: '/patrons/create',
+        name: 'patron-create',
+        component: CreatePatronView,
     },
     {
         path: '/:pathMatch(.*)*',

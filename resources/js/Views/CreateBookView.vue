@@ -1,26 +1,26 @@
 <template>
-    <div class="bookFormWrapper mt-3 md:w-1/2 lg:w-1/2 w-11/12">
+    <div class="bookFormWrapper mt-3 lg:w-1/2 w-1/4">
         <h2>Add New Book</h2>
-        <form class="newBookForm" @submit.prevent="createBook">
-            <div class="formElement">
-                <label>Title:</label>
-                <input v-model="form.title" type="text" required />
+        <form class="newBookForm h-full justify-between" @submit.prevent="createBook">
+            <div class="flex formElement w-full">
+                <label class="">Title:</label>
+                <input class="flex w-3/4" v-model="form.title" type="text" required />
             </div>
             <div class="formElement">
                 <label>Author:</label>
-                <input v-model="form.author" type="text" />
+                <input class="w-3/4" v-model="form.author" type="text" />
             </div>
             <div class="formElement">
                 <label>Published date:</label>
-                <input v-model="form.published_date" type="date" />
+                <input class="w-3/4" v-model="form.published_date" type="date" />
             </div>
             <div class="formElement">
                 <label>Synopsis:</label>
-                <textarea v-model="form.synopsis"></textarea>
+                <textarea class="w-3/4" v-model="form.synopsis"></textarea>
             </div>
             <div class="formElement">
                 <label>Isbn:</label>
-                <input v-model="form.isbn"></input>
+                <input class="w-3/4" v-model="form.isbn"></input>
             </div>
             <button
                 class="w-1/3 self-center"
@@ -80,6 +80,7 @@ export default {
 .bookFormWrapper {
     display: flex;
     flex-direction: column;
+    width: 30%;
     justify-content: center;
     padding: 10px;
     border: 1px solid gray;

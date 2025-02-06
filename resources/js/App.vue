@@ -1,7 +1,8 @@
 <template>
-    <nav>
+    <nav class="nav-element">
         <router-link class="nav-link" to="/">Home</router-link>
-        <router-link class="nav-link" to="/books/create">New Book</router-link>
+        <Dropdown class="nav-link" :items="bookDropdownItems" label="Books" @select="handleSelect"/>
+        <Dropdown class="nav-link" :items="patronDropdownItems" label="Patrons" @select="handleSelect"/>
     </nav>
     <div class="contentWrapper">
         <router-view />
@@ -10,8 +11,31 @@
 
 <script>
 import '../css/app.css';
+import Dropdown from './Components/Dropdown/Dropdown.vue';
 export default {
     name: 'App',
+    components: {
+        Dropdown,
+    },
+    data() {
+        return {
+            bookDropdownItems: [
+                {label: 'Books', value: '/'},
+                {label: 'NewBook', value: '/books/create'},
+            ],
+            patronDropdownItems: [
+                {label: 'Patrons', value: '/books/create'},
+                {label: 'New Patron', value: '/patrons/create'},
+            ]
+        }
+    },
+    methods: {
+        handleSelect(route) {
+            if (route) {
+                this.$router.push(route);
+            }
+        },
+    },
 }
 </script>
 
@@ -22,6 +46,8 @@ button {
     color: black;
     transition: all 0.25s linear;
     transition-property: color, background-color;
+    padding-left: 5px;
+    padding-right: 5px;
 
 }
 
@@ -41,8 +67,9 @@ nav {
     gap: 10px;
     font-size: 24px;
     border-bottom: 1px solid gray;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-
 .nav-link:hover {
     background-color: gray;
     color: black;
