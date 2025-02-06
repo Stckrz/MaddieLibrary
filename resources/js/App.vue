@@ -24,7 +24,7 @@ export default {
                 {label: 'NewBook', value: '/books/create'},
             ],
             patronDropdownItems: [
-                {label: 'Patrons', value: '/books/create'},
+                {label: 'Patrons', value: '/patrons/list'},
                 {label: 'New Patron', value: '/patrons/create'},
             ]
         }
