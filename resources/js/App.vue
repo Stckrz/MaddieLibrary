@@ -1,7 +1,7 @@
 <template>
     <nav class="nav-element">
         <router-link class="nav-link" to="/">Home</router-link>
-        <Dropdown class="nav-link" :items="bookDropdownItems" label="Books" @select="handleSelect"/>
+        <router-link class="nav-link" to="/books">Books</router-link>
         <Dropdown class="nav-link" :items="patronDropdownItems" label="Patrons" @select="handleSelect"/>
     </nav>
     <div class="contentWrapper">
@@ -19,10 +19,6 @@ export default {
     },
     data() {
         return {
-            bookDropdownItems: [
-                {label: 'Books', value: '/'},
-                {label: 'NewBook', value: '/books/create'},
-            ],
             patronDropdownItems: [
                 {label: 'Patrons', value: '/patrons/list'},
                 {label: 'New Patron', value: '/patrons/create'},
@@ -48,6 +44,7 @@ button {
     transition-property: color, background-color;
     padding-left: 5px;
     padding-right: 5px;
+    margin: 4px;
 
 }
 
@@ -60,6 +57,13 @@ input,
 textarea {
     background-color: gray;
     border-radius: 0.125em;
+}
+
+table,
+th,
+td {
+    border: 1px solid white;
+    padding: 5px;
 }
 
 nav {
@@ -98,6 +102,8 @@ nav {
 
 .bookListContainer {
     display: flex;
+    width: 100%;
+    margin: 4px;
     flex-direction: column;
     align-items: center;
     justify-content: center;

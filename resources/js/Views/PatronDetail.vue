@@ -1,6 +1,6 @@
 <template>
     <div class="bookDetailContainer">
-        <h1>Book detail page for {{ patron.name }}</h1>
+        <h1>Patron detail page for {{ patron.name }}</h1>
         <div class="flex flex-col md:flex-row md:w-1/2 w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
             <div class="flex flex-col gap-2 justify-center items-start md:mx-4 p-2 border w-full">
                 <div v-if="!isEditing">

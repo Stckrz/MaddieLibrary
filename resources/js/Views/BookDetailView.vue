@@ -1,41 +1,41 @@
 <template>
     <div class="bookDetailContainer">
         <h1>Book detail page for {{ book.title }}</h1>
-        <div class="flex flex-col md:flex-row md:w-1/2 w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
+        <div class="flex flex-col md:flex-row md:w-full w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
             <div class="md:mx-4 w-full flex items-center justify-center">
                 <img class="object-fill" :src="coverUrl" />
             </div>
-            <div class="flex flex-col gap-2 justify-center items-start md:mx-4 p-2 border w-full">
+            <div class="flex flex-col gap-2 justify-center items-start md:mx-4 p-2 w-full">
                 <div v-if="!isEditing">
                     Title: {{ book.title }}
                 </div>
-                <div class="md:w-1/2 w-full flex justify-between" v-else>
+                <div class="w-full flex justify-between" v-else>
                     Title:
-                    <input class="w-3/4" type="text" placeholder={{form.title}} v-model="form.title" />
+                    <input class="w-full" type="text" placeholder={{form.title}} v-model="form.title" />
                 </div>
 
                 <div v-if="!isEditing">
                     Author: {{ book.author }}
                 </div>
-                <div class="md:w-1/2 flex justify-between" v-else>
+                <div class="w-full flex justify-between" v-else>
                     Author:
-                    <input class="w-3/4" type="text" v-model="form.author" />
+                    <input class="w-full" type="text" v-model="form.author" />
                 </div>
 
                 <div v-if="!isEditing">
                     Published: {{ book.published_date }}
                 </div>
-                <div class="md:w-1/2 flex justify-between" v-else>
+                <div class="w-full flex justify-between" v-else>
                     Published:
-                    <input class="w-3/4" type="date" v-model="form.published_date" />
+                    <input class="w-full" type="date" v-model="form.published_date" />
                 </div>
 
                 <div v-if="!isEditing">
                     Synopsis: {{ book.synopsis }}
                 </div>
-                <div class="md:w-1/2 flex justify-between" v-else>
+                <div class="w-full flex justify-between" v-else>
                     Synopsis:
-                    <textarea class="w-3/4 overflow-hidden" type="text" v-model="form.synopsis" />
+                    <textarea class="w-full overflow-hidden" type="text" v-model="form.synopsis" />
                 </div>
                 <div className="flex gap-2">
                     <button v-on:click="editHandler">

@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../Views/HomeView.vue';
+import BookListView from '../Views/Books/BookListView.vue';
 import BookDetailView from '../Views/BookDetailView.vue';
-import CreateBookView from '../Views/CreateBookView.vue';
-import CreatePatronView from '../Views/CreatePatronView.vue';
 import PatronList from '../Views/PatronList.vue';
 import PatronDetailView from '../Views/PatronDetail.vue';
 import NotFoundView from '../Views/NotFoundView.vue';
@@ -14,20 +13,16 @@ const routes = [
         component: HomeView,
     },
     {
+        path: '/books',
+        name: 'book-list',
+        component: BookListView,
+        props: true,
+    },
+    {
         path: '/books/:id',
         name: 'book-detail',
         component: BookDetailView,
         props: true,
-    },
-    {
-        path: '/books/create',
-        name: 'book-create',
-        component: CreateBookView,
-    },
-    {
-        path: '/patrons/create',
-        name: 'patron-create',
-        component: CreatePatronView,
     },
     {
         path: '/patrons/list',

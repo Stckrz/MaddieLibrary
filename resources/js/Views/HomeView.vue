@@ -1,78 +1,50 @@
 <script>
+import Modal from '../Components/Modal/Modal.vue';
+import Toast from '../Components/Toast/Toast.vue';
+import { useToastStore } from '../Stores/toastStore.js';
+import { mapStores } from 'pinia';
 export default {
     name: 'HomeView',
     data() {
         return {
-            books: [],
-            form: {
-                title: '',
-                author: '',
-                published_date: '',
-                synopsis: '',
-            }
+            toastShown: false,
         };
     },
-    mounted() {
-        this.fetchBooks();
+    components: {
+        Toast
+    },
+    computed: {
+        ...mapStores(useToastStore)
     },
     methods: {
-        async fetchBooks() {
-            try {
-                const response = await fetch('/api/books');
-                this.books = await response.json();
-            } catch (error) {
-                console.error('Error Fetching Books: ', error);
-            }
+        addToast() {
+            this.toastStore.addToast("Hello I am a toast!", "success");
         },
-        async createBook() {
-            try {
-                const response = await fetch('/api/books', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(this.form),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create book');
-                }
-
-                const data = await response.json();
-                console.log(data.message);
-
-                // Clear the form
-                this.form = {
-                    title: '',
-                    author: '',
-                    published_date: '',
-                    synopsis: '',
-                };
-
-                // Re-fetch the books to update the list
-                this.fetchBooks();
-            } catch (error) {
-                console.error('Error creating book:', error);
-            }
-        },
-    },
+    }
 }
 </script>
 
 <template>
     <div>
-        <div className="bookListContainer">
-            <h1 class="color-red-950 m-1000">My Books</h1>
-            <ul class="bookList">
-                <li class="listItem" v-for="book in books" :key="book.id">
-                    <router-link :to="{
-                        name: 'book-detail',
-                        params: { id: book.id }
-                    }">
-                        <strong>{{ book.title }}</strong>
-                        by {{ book.author }}
-                        (Published {{ book.published_date }})
-                    </router-link>
-                </li>
-            </ul>
+        <h1>
+            Welcome To The Library!
+        </h1>
+        <div class="homeNavigationLinks">
+            <router-link class="nav-link" to="/books">Books</router-link>
+            <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
+            <button v-on:click="addToast">
+                Toast
+            </button>
+            <Teleport to="body">
+                <Toast>
+                </Toast>
+            </Teleport>
         </div>
     </div>
 </template>
+<style>
+.homeNavigationLinks {
+    display: flex;
+    flex-direction: column;
+}
+</style>

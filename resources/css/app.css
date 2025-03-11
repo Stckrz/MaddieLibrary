@@ -2,14 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
+:root {
     --main-bg-color: black;
     --secondary-bg-color: #212529;
     --tertiary-bg-color: #495057;
     --text-color: #adb5bd;
 }
 
-.body-class{
+@font-face {
+    font-family: "8bitFont";
+    src: url('../../public//fonts//Minecraft.ttf');
+}
+
+.body-class {
+    font-family: "8bitfont";
+    letter-spacing: 2px;
     background-color: var(--main-bg-color);
     color: var(--text-color);
+    overflow: hidden;
 }

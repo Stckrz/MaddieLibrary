@@ -78,9 +78,10 @@ export default {
 </script>
 <style>
 .bookFormWrapper {
+    background-color: #111111;
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 100%;
     justify-content: center;
     padding: 10px;
     border: 1px solid gray;
