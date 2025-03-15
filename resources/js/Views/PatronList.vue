@@ -46,7 +46,10 @@ export default {
             <tbody>
                 <tr>
                     <td>
-                        Name
+                        Last
+                    </td>
+                    <td>
+                        First
                     </td>
                     <td>
                         Number
@@ -61,7 +64,15 @@ export default {
                             name: 'patron-detail',
                             params: { id: patron.id }
                         }">
-                            {{ patron.name }}
+                            {{ patron.lastName }}
+                        </router-link>
+                    </td>
+                    <td>
+                        <router-link :to="{
+                            name: 'patron-detail',
+                            params: { id: patron.id }
+                        }">
+                            {{ patron.firstName }}
                         </router-link>
                     </td>
                     <td>{{ patron.card_number }}</td>

@@ -3,8 +3,12 @@
         <h2>Add New Patron</h2>
         <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
             <div class="flex formElement w-full">
-                <label class="">Name:</label>
-                <input class="flex w-3/4" v-model="form.name" type="text" required />
+                <label class="">Last Name:</label>
+                <input class="flex w-3/4" v-model="form.lastName" type="text" required />
+            </div>
+            <div class="flex formElement w-full">
+                <label class="">First Name:</label>
+                <input class="flex w-3/4" v-model="form.firstName" type="text" required />
             </div>
             <div class="formElement">
                 <label>Card Number:</label>
@@ -22,12 +26,17 @@
 </template>
 
 <script>
+import toastMixin from '../Mixins/toastMixin.js';
 export default {
     name: 'CreatePatronView',
+    mixins: [
+        toastMixin
+    ],
     data() {
         return {
             form: {
-                name: '',
+                lastName: '',
+                firstName: '',
                 card_number: '',
                 email: '',
             }
@@ -47,16 +56,17 @@ export default {
                 }
 
                 const data = await response.json();
-                console.log(data.message);
 
                 // Clear the form
                 this.form = {
-                    name: '',
+                    lastName: '',
+                    firstName: '',
                     card_number: '',
                     email: '',
                 };
             } catch (error) {
                 console.error('Error creating patron:', error);
+                this.addToast("Unable to create patron", "error");
             }
         },
     },

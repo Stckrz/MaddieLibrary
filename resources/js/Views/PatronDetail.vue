@@ -1,14 +1,22 @@
 <template>
     <div class="bookDetailContainer">
-        <h1>Patron detail page for {{ patron.name }}</h1>
-        <div class="flex flex-col md:flex-row md:w-1/2 w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
+        <h1>Patron detail page for {{ patron.firstName }} {{ patron.lastName }}</h1>
+        <div
+            class="flex flex-col md:flex-row md:w-1/2 w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
             <div class="flex flex-col gap-2 justify-center items-start md:mx-4 p-2 border w-full">
                 <div v-if="!isEditing">
-                    Name: {{ patron.name }}
+                    Last Name: {{ patron.lastName }}
                 </div>
                 <div class="md:w-1/2 w-full flex justify-between" v-else>
-                    Name:
-                    <input class="w-3/4" type="text" placeholder={{form.name}} v-model="form.name" />
+                    Last Name:
+                    <input class="w-3/4" type="text" placeholder={{form.lastName}} v-model="form.lastName" />
+                </div>
+                <div v-if="!isEditing">
+                    First ame: {{ patron.firstName }}
+                </div>
+                <div class="md:w-1/2 w-full flex justify-between" v-else>
+                    Last Name:
+                    <input class="w-3/4" type="text" placeholder={{form.firstName}} v-model="form.firstName" />
                 </div>
 
                 <div v-if="!isEditing">
@@ -36,10 +44,15 @@
             </div>
         </div>
     </div>
+
 </template>
 <script>
+import toastMixin from '../Mixins/toastMixin.js';
 export default {
     name: 'PatronDetailView',
+    mixins: [
+        toastMixin
+    ],
     props: {
         id: {
             type: String,
@@ -51,7 +64,8 @@ export default {
             patron: {},
             isEditing: false,
             form: {
-                name: '',
+                lastName: '',
+                firstName: '',
                 card_number: '',
                 email: '',
             }
@@ -63,7 +77,8 @@ export default {
                 const response = await fetch(`/api/patrons/${this.id}`)
                 this.patron = await response.json();
                 console.log(this.patron)
-                this.form.name = this.patron.name;
+                this.form.lastName = this.patron.lastName;
+                this.form.firstName = this.patron.firstName;
                 this.form.card_number = this.patron.card_number;
                 this.form.email = this.patron.email;
             } catch (error) {
@@ -89,10 +104,11 @@ export default {
                 this.isEditing = false;
                 // Clear the form
             } catch (error) {
+                this.addToast("unable to edit patron", "error");
                 console.error('Error editing patron:', error);
             }
         },
-        editHandler(){
+        editHandler() {
             this.isEditing = !this.isEditing
         },
     },

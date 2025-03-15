@@ -7,6 +7,12 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 8001,
+        proxy: {
+            '/api': {
+                target: 'http://127.0.0.1:8000',
+                changeOrigin: true,
+            }
+        },
         hmr: {
             host: '192.168.0.108', // Change this value for your local network ip address
             // host: '192.168.1.250', // Change this value for your local network ip address

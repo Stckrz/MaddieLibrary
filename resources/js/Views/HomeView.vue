@@ -1,24 +1,16 @@
 <script>
 import Modal from '../Components/Modal/Modal.vue';
-import Toast from '../Components/Toast/Toast.vue';
 import { useToastStore } from '../Stores/toastStore.js';
 import { mapStores } from 'pinia';
+import toastMixin from '../Mixins/toastMixin.js';
 export default {
     name: 'HomeView',
-    data() {
-        return {
-            toastShown: false,
-        };
-    },
-    components: {
-        Toast
-    },
-    computed: {
-        ...mapStores(useToastStore)
-    },
+    mixins: [
+        toastMixin
+    ],
     methods: {
-        addToast() {
-            this.toastStore.addToast("Hello I am a toast!", "success");
+        createToast() {
+            this.addToast("Hello I am a toast!", "success")
         },
     }
 }
@@ -32,13 +24,9 @@ export default {
         <div class="homeNavigationLinks">
             <router-link class="nav-link" to="/books">Books</router-link>
             <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
-            <button v-on:click="addToast">
+            <button v-on:click="createToast">
                 Toast
             </button>
-            <Teleport to="body">
-                <Toast>
-                </Toast>
-            </Teleport>
         </div>
     </div>
 </template>

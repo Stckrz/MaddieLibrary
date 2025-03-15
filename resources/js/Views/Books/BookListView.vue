@@ -23,6 +23,7 @@ export default {
             try {
                 const response = await fetch('/api/books');
                 this.books = await response.json();
+                console.log(this.books)
             } catch (error) {
                 console.error('Error Fetching Books: ', error);
             }

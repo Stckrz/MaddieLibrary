@@ -9,7 +9,8 @@ class Patron extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
+        'firstName',
+        'lastName',
         'card_number',
         'email',
     ];

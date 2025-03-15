@@ -23,7 +23,8 @@ class PatronController extends Controller
     {
         Log::info('Received request data:', $request->all());
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
             'card_number' => 'required|string|unique:patrons,card_number|max:50',
             'email' => 'nullable|email',
         ]);
@@ -44,7 +45,8 @@ class PatronController extends Controller
     public function update(Request $request, Patron $patron)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
             'card_number' => 'required|string|unique:patrons,card_number|max:50',
             'email' => 'nullable|email',
         ]);

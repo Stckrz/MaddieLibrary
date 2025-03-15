@@ -5,31 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Book extends Distributable
+class Cd extends Distributable
 {
     use HasFactory;
     protected $fillable = [
         'title',
-        'author',
-        'published_date',
+        'artist',
+        'release_date',
         'synopsis',
-        'isbn',
         'checked_in',
     ];
     protected $casts = [
         'checked_in' => 'boolean',
     ];
 
-    // Automatically sets the type for new Book instances.
     protected $attributes = [
-        'type' => 'Book',
+        'type' => 'Cd',
     ];
 
-    // Add a global scope to ensure queries only return books.
+    // Add a global scope to ensure queries only return games.
     protected static function booted()
     {
         static::addGlobalScope('type', function (Builder $builder) {
-            $builder->where('type', 'Book');
+            $builder->where('type', 'Cd');
         });
     }
 }

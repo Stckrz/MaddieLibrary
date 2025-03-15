@@ -2,35 +2,26 @@
     <nav class="nav-element">
         <router-link class="nav-link" to="/">Home</router-link>
         <router-link class="nav-link" to="/books">Books</router-link>
-        <Dropdown class="nav-link" :items="patronDropdownItems" label="Patrons" @select="handleSelect"/>
+        <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
     </nav>
     <div class="contentWrapper">
         <router-view />
+        <Teleport to="body">
+            <Toast>
+            </Toast>
+        </Teleport>
     </div>
 </template>
 
 <script>
 import '../css/app.css';
 import Dropdown from './Components/Dropdown/Dropdown.vue';
+import Toast from './Components/Toast/Toast.vue';
 export default {
     name: 'App',
     components: {
         Dropdown,
-    },
-    data() {
-        return {
-            patronDropdownItems: [
-                {label: 'Patrons', value: '/patrons/list'},
-                {label: 'New Patron', value: '/patrons/create'},
-            ]
-        }
-    },
-    methods: {
-        handleSelect(route) {
-            if (route) {
-                this.$router.push(route);
-            }
-        },
+        Toast
     },
 }
 </script>
@@ -45,7 +36,6 @@ button {
     padding-left: 5px;
     padding-right: 5px;
     margin: 4px;
-
 }
 
 button:hover {
@@ -74,6 +64,7 @@ nav {
     margin-left: 10px;
     margin-right: 10px;
 }
+
 .nav-link:hover {
     background-color: gray;
     color: black;
