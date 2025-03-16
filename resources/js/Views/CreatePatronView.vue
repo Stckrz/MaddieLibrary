@@ -2,25 +2,23 @@
     <div class="bookFormWrapper mt-3 lg:w-1/2 w-1/4">
         <h2>Add New Patron</h2>
         <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
-            <div class="flex formElement w-full">
-                <label class="">Last Name:</label>
-                <input class="flex w-3/4" v-model="form.lastName" type="text" required />
+            <div class="form-group">
+                <label class="form-label">Last Name:</label>
+                <input class="form-input" v-model="form.lastName" type="text" required />
             </div>
-            <div class="flex formElement w-full">
-                <label class="">First Name:</label>
-                <input class="flex w-3/4" v-model="form.firstName" type="text" required />
+            <div class="form-group">
+                <label class="form-label">First Name:</label>
+                <input class="form-input" v-model="form.firstName" type="text" required />
             </div>
-            <div class="formElement">
-                <label>Card Number:</label>
-                <input class="w-3/4" v-model="form.card_number" type="text" />
+            <div class="form-group">
+                <label class="form-label">Card Number:</label>
+                <input class="form-input" v-model="form.card_number" type="text" />
             </div>
-            <div class="formElement">
-                <label>Email:</label>
-                <input class="w-3/4" v-model="form.email" type="email" />
+            <div class="form-group">
+                <label class="form-label">Email:</label>
+                <input class="form-input" v-model="form.email" type="email" />
             </div>
-            <button
-                class="w-1/3 self-center"
-                type="submit">Create</button>
+            <button class="w-1/3 self-center" type="submit">Create</button>
         </form>
     </div>
 </template>

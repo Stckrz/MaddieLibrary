@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../Views/HomeView.vue';
+import DistributablesListView from '../Views/Distributables/DistributablesListView.vue';
+import DistributableDetailView from '../Views/Distributables/DistributableDetailView.vue';
 import BookListView from '../Views/Books/BookListView.vue';
 import BookDetailView from '../Views/BookDetailView.vue';
 import PatronList from '../Views/PatronList.vue';
@@ -11,6 +13,18 @@ const routes = [
         path: '/',
         name: 'home',
         component: HomeView,
+    },
+    {
+        path: '/distributables',
+        name: 'distributables-list',
+        component: DistributablesListView,
+        props: true,
+    },
+    {
+        path: '/distributable/:id',
+        name: 'distributable-detail',
+        component: DistributableDetailView,
+        props: true,
     },
     {
         path: '/books',

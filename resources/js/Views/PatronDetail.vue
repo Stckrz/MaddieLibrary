@@ -12,7 +12,7 @@
                     <input class="w-3/4" type="text" placeholder={{form.lastName}} v-model="form.lastName" />
                 </div>
                 <div v-if="!isEditing">
-                    First ame: {{ patron.firstName }}
+                    First Name: {{ patron.firstName }}
                 </div>
                 <div class="md:w-1/2 w-full flex justify-between" v-else>
                     Last Name:

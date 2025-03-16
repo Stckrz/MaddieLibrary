@@ -3,10 +3,11 @@
 @tailwind utilities;
 
 :root {
-    --main-bg-color: black;
+    --main-bg-color: #101212;
     --secondary-bg-color: #212529;
     --tertiary-bg-color: #495057;
-    --text-color: #adb5bd;
+    /* --text-color: #adb5bd; */
+    --text-color: #a0a0a0;
 }
 
 @font-face {

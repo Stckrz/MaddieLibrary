@@ -45,8 +45,8 @@ export default {
     min-height: 30%;
     min-width: 30%;
     border-radius: 0.5em;
-    background-color: #111111;
-    border: 1px solid white;
+    background-color: var(--main-bg-color);
+    border: 1px solid var(--text-color);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -61,5 +61,12 @@ export default {
 .modal-leave-to {
     opacity: 0;
     transform: scale(1.05);
+}
+
+@media only screen and (max-width: 600px) {
+    .modalContent {
+        min-width: 70%;
+    }
+
 }
 </style>

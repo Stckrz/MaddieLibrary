@@ -1,7 +1,8 @@
 <template>
     <nav class="nav-element">
         <router-link class="nav-link" to="/">Home</router-link>
-        <router-link class="nav-link" to="/books">Books</router-link>
+        <!-- <router-link class="nav-link" to="/books">Books</router-link> -->
+        <router-link class="nav-link" to="/distributables">Distributables</router-link>
         <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
     </nav>
     <div class="contentWrapper">
@@ -52,8 +53,13 @@ textarea {
 table,
 th,
 td {
-    border: 1px solid white;
     padding: 5px;
+    table-layout: fixed;
+}
+
+th {
+    text-align: start;
+    font-weight: bold;
 }
 
 nav {
@@ -63,6 +69,39 @@ nav {
     border-bottom: 1px solid gray;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+select {
+    background-color: gray;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 2px;
+}
+
+.form-label {
+    display: block;
+}
+
+.form-input {
+    display: block;
+    color: black;
+    padding: 2px;
+}
+
+.fieldContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-link {
+    padding: 4px;
 }
 
 .nav-link:hover {
@@ -105,5 +144,11 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+    .fieldContainer {
+        flex-direction: column;
+    }
 }
 </style>
