@@ -1,26 +1,24 @@
 <template>
-    <div class="bookFormWrapper mt-3 lg:w-1/2 w-1/4">
-        <h2>Add New Patron</h2>
-        <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
-            <div class="form-group">
-                <label class="form-label">Last Name:</label>
-                <input class="form-input" v-model="form.lastName" type="text" required />
-            </div>
-            <div class="form-group">
-                <label class="form-label">First Name:</label>
-                <input class="form-input" v-model="form.firstName" type="text" required />
-            </div>
-            <div class="form-group">
-                <label class="form-label">Card Number:</label>
-                <input class="form-input" v-model="form.card_number" type="text" />
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email:</label>
-                <input class="form-input" v-model="form.email" type="email" />
-            </div>
-            <button class="w-1/3 self-center" type="submit">Create</button>
-        </form>
-    </div>
+    <h2>Add New Patron</h2>
+    <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
+        <div class="form-group">
+            <label class="form-label">Last Name:</label>
+            <input class="form-input" v-model="form.lastName" type="text" required />
+        </div>
+        <div class="form-group">
+            <label class="form-label">First Name:</label>
+            <input class="form-input" v-model="form.firstName" type="text" required />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Card Number:</label>
+            <input class="form-input" v-model="form.card_number" type="text" />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email:</label>
+            <input class="form-input" v-model="form.email" type="email" />
+        </div>
+        <button class="w-1/3 self-center" type="submit">Create</button>
+    </form>
 </template>
 
 <script>

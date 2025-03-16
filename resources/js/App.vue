@@ -34,8 +34,7 @@ button {
     color: black;
     transition: all 0.25s linear;
     transition-property: color, background-color;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 2px 5px 2px;
     margin: 4px;
 }
 

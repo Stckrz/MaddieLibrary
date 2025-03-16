@@ -46,12 +46,12 @@ export default {
 <template>
     <div class="form-group">
         <label for="selectType" class="form-label">Type
-            <select v-model="distributableType" aria-label="selectType" class="form-input">
+        </label>
+            <select id="selectType" name="selectType" v-model="distributableType" aria-label="selectType" class="form-input">
                 <option>Book</option>
                 <option>Game</option>
                 <option>Cd</option>
             </select>
-        </label>
     </div>
     <form class="newDistributableForm" @submit.prevent="createDistributable">
         <div class="fieldContainer">
@@ -118,14 +118,13 @@ export default {
     margin: 4px;
 }
 
-
 .selectType {
     width: 100%;
 }
 
 select {
     width: 100%;
-    padding: 2px;
+    padding: 4px;
     margin: 4px;
     border-radius: 0.2em
 }
