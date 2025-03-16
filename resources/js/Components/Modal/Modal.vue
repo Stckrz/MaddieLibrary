@@ -44,6 +44,7 @@ export default {
     padding: 10px;
     min-height: 30%;
     min-width: 30%;
+    width: 70%;
     border-radius: 0.5em;
     background-color: var(--main-bg-color);
     border: 1px solid var(--text-color);

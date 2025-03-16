@@ -1,6 +1,16 @@
 <script>
+import toastMixin from '../../Mixins/toastMixin.js';
 export default {
     name: 'CreateDistributable',
+    props: {
+        closeModal: {
+            type: Function,
+            required: false
+        }
+    },
+    mixins: [
+        toastMixin
+    ],
     data() {
         return {
             distributableType: "Book",
@@ -36,7 +46,52 @@ export default {
         }
     },
     methods: {
-        createDistributable() {
+        async createDistributable() {
+            let distributableInputType = ""
+            switch (this.distributableType) {
+                case "Game":
+                    distributableInputType = 'games';
+                    break;
+                case "Cd":
+                    distributableInputType = 'cds';
+                    break;
+                case "Book":
+                    distributableInputType = 'books';
+                    break;
+            }
+
+            try {
+                const response = await fetch(`/api/${distributableInputType}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.form),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create book');
+                }
+
+                const data = await response.json();
+                console.log(data.message);
+
+                // Clear the form
+                this.form = {
+                    title: '',
+                    author: '',
+                    artist: '',
+                    synopsis: '',
+                    platform: '',
+                    studio: '',
+                    published_date: '',
+                    release_date: '',
+                    isbn: '',
+                    checked_in: true,
+                };
+                this.addToast("Distributable created successfully!", "success");
+            } catch (error) {
+                console.error('Error creating distributable:', error);
+                this.addToast("Unable to create distributable", "error");
+            }
 
         }
     },
@@ -47,18 +102,19 @@ export default {
     <div class="form-group">
         <label for="selectType" class="form-label">Type
         </label>
-            <select id="selectType" name="selectType" v-model="distributableType" aria-label="selectType" class="form-input">
-                <option>Book</option>
-                <option>Game</option>
-                <option>Cd</option>
-            </select>
+        <select id="selectType" name="selectType" v-model="distributableType" aria-label="selectType"
+            class="form-input">
+            <option>Book</option>
+            <option>Game</option>
+            <option>Cd</option>
+        </select>
     </div>
     <form class="newDistributableForm" @submit.prevent="createDistributable">
         <div class="fieldContainer">
             <div class="form-group">
                 <label for="title" class="form-label">Title</label>
-                <input id="title" name="title" v-model="form.title" type="text" aria-required="true"
-                    class="form-input" />
+                <input id="title" name="title" v-model="form.title" type="text" aria-required="true" class="form-input"
+                    required />
             </div>
             <div class="form-group">
                 <label for="synopsis" class="form-label">Synopsis
@@ -70,24 +126,25 @@ export default {
         <div v-if="distributableType === 'Book'" class="fieldContainer">
             <div class="form-group">
                 <label for="isbn" class="form-label">ISBN</label>
-                <input id="isbn" name="isbn" v-model="form.isbn" type="text" aria-required="true" class="form-input" />
+                <input id="isbn" name="isbn" v-model="form.isbn" type="text" aria-required="true" class="form-input"
+                    required />
             </div>
             <div class="form-group">
                 <label for="author" class="form-label">Author</label>
                 <input id="author" name="author" v-model="form.author" type="text" aria-required="true"
-                    class="form-input" />
+                    class="form-input" required />
             </div>
             <div class="form-group">
                 <label for="published_date" class="form-label">Published Date</label>
                 <input id="published_date" name="published_date" v-model="form.published_date" type="date"
-                    aria-required="true" class="form-input" />
+                    aria-required="true" class="form-input" required />
             </div>
         </div>
         <div v-if="distributableType === 'Cd'" class="fieldContainer">
             <div class="form-group">
                 <label for="artist" class="form-label">Artist</label>
                 <input id="artist" name="artist" v-model="form.artist" type="text" aria-required="true"
-                    class="form-input" />
+                    class="form-input" required />
             </div>
             <div class="form-group">
                 <label for="release_date" class="form-label">Release Date</label>
@@ -103,7 +160,7 @@ export default {
             <div class="form-group">
                 <label for="platform" class="form-label">Platform</label>
                 <input id="platform" name="platform" v-model="form.platform" type="text" aria-required="true"
-                    class="form-input" />
+                    class="form-input" required />
             </div>
             <div class="form-group">
                 <label for="release_date" class="form-label">Release Date</label>
@@ -111,6 +168,7 @@ export default {
                     aria-required="true" class="form-input" />
             </div>
         </div>
+        <button type="submit">Submit</button>
     </form>
 </template>
 <style scoped>
@@ -128,5 +186,4 @@ select {
     margin: 4px;
     border-radius: 0.2em
 }
-
 </style>
