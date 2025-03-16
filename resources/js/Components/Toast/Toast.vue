@@ -35,6 +35,7 @@ export default {
     justify-content: center;
     align-items: center;
     background: rgba(25, 25, 25, 0.5);
+    z-index: 9000;
 }
 
 .toastContent {
