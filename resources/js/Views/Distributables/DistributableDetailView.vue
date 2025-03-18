@@ -1,4 +1,5 @@
 <script>
+import toastMixin from '../../Mixins/toastMixin.js';
 export default {
     name: 'DistributableDetailView',
     props: {
@@ -7,6 +8,9 @@ export default {
             required: true,
         },
     },
+    mixins: [
+        toastMixin
+    ],
     data() {
         return {
             distributable: {},
@@ -22,7 +26,36 @@ export default {
                     this.coverUrl = `https://covers.openlibrary.org/b/isbn/${this.distributable.isbn}-M.jpg`
                 }
             } catch (error) {
-                console.error('Error Fetching Book: ', error);
+                console.error('Error Fetching Distributable: ', error);
+            }
+        },
+        async deleteDistributable() {
+            console.log(this.distributable)
+            let distributableInputType = ""
+            switch (this.distributable.type) {
+                case "Game":
+                    distributableInputType = 'games';
+                    break;
+                case "Cd":
+                    distributableInputType = 'cds';
+                    break;
+                case "Book":
+                    distributableInputType = 'books';
+                    break;
+            }
+            try {
+                const response = await fetch(`/api/${distributableInputType}/${this.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                if (!response.ok) {
+                    console.error('Unable to delete');
+                }
+                const data = await response.json();
+                this.addToast("Distributable successfully deleted", "success");
+                this.$router.push({ path: '/distributables' })
+            } catch (error) {
+                console.error('Error Deleting Distributable: ', error);
             }
         },
     },
@@ -85,6 +118,7 @@ export default {
                 {{ this.distributable.isbn }}
             </div>
         </div>
+        <button @click="deleteDistributable">Delete</button>
     </div>
 
 </template>
