@@ -2,12 +2,17 @@
 import Modal from '../../Components/Modal/Modal.vue';
 import CreateBookView from '../CreateBookView.vue';
 import CreateDistributableView from '../Distributables/CreateDistributableView.vue';
+import { FaSort } from 'vue3-icons/fa';
+
+
 export default {
     name: "DistributablesListView",
     components: {
         Modal,
         CreateBookView,
         CreateDistributableView,
+        FaSort,
+
     },
 
     data() {
@@ -15,6 +20,7 @@ export default {
             distributables: [],
             newBookModalShown: false,
             selectedDistributable: 0,
+            sortAsc: 'asc',
         };
     },
     mounted() {
@@ -25,13 +31,21 @@ export default {
             try {
                 const response = await fetch('/api/distributables');
                 this.distributables = await response.json();
-                console.log(this.distributables)
             } catch (error) {
                 console.error('Error Fetching Distributables: ', error);
             }
         },
         toggleNewBookModal() {
             this.newBookModalShown = !this.newBookModalShown
+        },
+        async sortDistributables(sortBy) {
+            try {
+                const response = await fetch(`/api/distributables?sort_by=${sortBy}&sort_order=${this.sortAsc}`);
+                this.distributables = await response.json();
+                this.sortAsc = this.sortAsc === 'asc' ? 'desc' : 'asc';
+            } catch (error) {
+                console.error('Error Fetching Distributables: ', error);
+            }
         },
     },
 }
@@ -46,18 +60,25 @@ export default {
         <table class="bookTable">
             <tbody>
                 <tr>
-                    <th>Id</th>
-                    <th>Type</th>
-                    <th>Title</th>
+                    <th v-on:click="sortDistributables('type')">
+                        <div class="tableHeaderContainer">
+                            <div class="h-full flex items-center justify-center">Type</div>
+                            <FaSort class="self-start" size="1em" />
+                        </div>
+                    </th>
+                    <th v-on:click="sortDistributables('title')">
+
+                        <div class="tableHeaderContainer">
+                            <div class="h-full flex items-center justify-center">Title</div>
+                            <FaSort class="self-start" size="1em" />
+                        </div>
+                    </th>
                     <th>Published</th>
                 </tr>
                 <tr v-for="distributable in distributables" :key="distributable.id" class="tableListItem" :to="{
                     name: 'distributable-detail',
                     params: { id: distributable.id }
                 }" @click="$router.push({ name: 'distributable-detail', params: { id: distributable.id } })">
-                    <td>
-                        {{ distributable.id }}
-                    </td>
                     <td>
                         {{ distributable.type }}
                     </td>
@@ -76,7 +97,7 @@ export default {
         <div>
             <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">
                 <!-- <CreateBookView /> -->
-                <CreateDistributableView :closeModal='toggleNewBookModal'/>
+                <CreateDistributableView :closeModal='toggleNewBookModal' />
             </Modal>
         </div>
     </div>
@@ -112,5 +133,10 @@ export default {
 .tableListItem:hover {
     background-color: gray;
     color: black;
+}
+
+.tableHeaderContainer {
+    display: flex;
+    align-items: flex-center;
 }
 </style>
