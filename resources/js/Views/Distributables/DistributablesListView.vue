@@ -14,22 +14,28 @@ export default {
         FaSort,
 
     },
-
     data() {
         return {
             distributables: [],
             newBookModalShown: false,
             selectedDistributable: 0,
             sortAsc: 'asc',
+            sortCategory: "distributables",
         };
     },
     mounted() {
         this.fetchDistributables();
     },
+
+    watch: {
+        sortCategory(newType, oldType) {
+            this.fetchDistributables()
+        }
+    },
     methods: {
         async fetchDistributables() {
             try {
-                const response = await fetch('/api/distributables');
+                const response = await fetch(`/api/${this.sortCategory}`);
                 this.distributables = await response.json();
             } catch (error) {
                 console.error('Error Fetching Distributables: ', error);
@@ -40,7 +46,7 @@ export default {
         },
         async sortDistributables(sortBy) {
             try {
-                const response = await fetch(`/api/distributables?sort_by=${sortBy}&sort_order=${this.sortAsc}`);
+                const response = await fetch(`/api/${this.sortCategory}?sort_by=${sortBy}&sort_order=${this.sortAsc}`);
                 this.distributables = await response.json();
                 this.sortAsc = this.sortAsc === 'asc' ? 'desc' : 'asc';
             } catch (error) {
@@ -48,6 +54,7 @@ export default {
             }
         },
     },
+
 }
 </script>
 
@@ -55,6 +62,24 @@ export default {
     <div class="distributablesListContainer">
         <div class="bookListHeaderContainer">
             <h1>Distributables</h1>
+            <div class="sort-wrapper">
+                <label for="Distributables">
+                    <input id="Distributables" type="radio" name="sort_category" value="distributables" v-model="sortCategory"/>
+                    All
+                </label>
+                <label for="Games">
+                    <input id="Games" type="radio" name="sort_category" value="games" v-model="sortCategory"/>
+                    Games
+                </label>
+                <label for="Books">
+                    <input id="Books" type="radio" name="sort_category" value="books" v-model="sortCategory"/>
+                    Books
+                </label>
+                <label for="Cds">
+                    <input id="Cds" type="radio" name="sort_category" value="cds" v-model="sortCategory"/>
+                    Cds
+                </label>
+            </div>
             <button v-on:click="toggleNewBookModal">New Distributable</button>
         </div>
         <table class="bookTable">
@@ -138,5 +163,12 @@ export default {
 .tableHeaderContainer {
     display: flex;
     align-items: flex-center;
+    cursor: pointer;
+}
+
+.sort-wrapper{
+    display: flex;
+    gap: 20px;
+
 }
 </style>
