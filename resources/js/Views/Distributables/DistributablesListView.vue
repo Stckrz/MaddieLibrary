@@ -96,7 +96,7 @@ export default {
         </table>
         <div>
             <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">
-                <!-- <CreateBookView /> -->
+                <!-- <CreateDistributableView /> -->
                 <CreateDistributableView :closeModal='toggleNewBookModal' />
             </Modal>
         </div>

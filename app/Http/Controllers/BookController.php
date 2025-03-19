@@ -10,9 +10,23 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
+        $query = Book::query();
+
+        if ($request->has('sort_by')) {
+            $sortField = $request->input('sort_by');
+            $sortDirection = $request->input('sort_order', 'asc'); // Default to ascending if not specified
+
+            // Validate sort direction
+            if (!in_array($sortDirection, ['asc', 'desc'])) {
+                $sortDirection = 'asc';
+            }
+
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        $books = $query->get();
         return response()->json($books);
     }
 
