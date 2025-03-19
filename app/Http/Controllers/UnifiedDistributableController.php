@@ -28,6 +28,18 @@ class UnifiedDistributableController extends Controller
             $checkedIn = filter_var($request->input('checked_in'), FILTER_VALIDATE_BOOLEAN);
             $query->where('checked_in', $checkedIn);
         }
+        //sorting logic
+        if ($request->has('sort_by')) {
+            $sortField = $request->input('sort_by');
+            $sortDirection = $request->input('sort_order', 'asc'); // Default to ascending if not specified
+
+            // Validate sort direction
+            if (!in_array($sortDirection, ['asc', 'desc'])) {
+                $sortDirection = 'asc';
+            }
+
+            $query->orderBy($sortField, $sortDirection);
+        }
 
         $distributables = $query->get();
         return response()->json($distributables);
@@ -37,5 +49,4 @@ class UnifiedDistributableController extends Controller
     {
         return response()->json($distributable);
     }
-
 }
