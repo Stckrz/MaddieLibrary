@@ -153,6 +153,7 @@ export default {
 
 .tableListItem {
     border-radius: 50px;
+    transition: background-color 0.5s linear, color 0.5s linear;
 }
 
 .tableListItem:hover {

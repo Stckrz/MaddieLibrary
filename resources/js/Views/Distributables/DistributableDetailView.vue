@@ -1,7 +1,13 @@
 <script>
+import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
+import Modal from '../../Components/Modal/Modal.vue';
 import toastMixin from '../../Mixins/toastMixin.js';
 export default {
     name: 'DistributableDetailView',
+    components: {
+        Modal,
+        ConfirmationBox,
+    },
     props: {
         id: {
             type: String,
@@ -15,6 +21,7 @@ export default {
         return {
             distributable: {},
             isEditing: false,
+            dialogueShown: false,
         }
     },
     methods: {
@@ -58,6 +65,12 @@ export default {
                 console.error('Error Deleting Distributable: ', error);
             }
         },
+        toggleDialogue() {
+            this.dialogueShown = !this.dialogueShown;
+        },
+        toggleEditModal() {
+            this.isEditing = !this.isEditing;
+        }
     },
     mounted() {
         this.fetchDistributable(this.id);
@@ -118,7 +131,13 @@ export default {
                 {{ this.distributable.isbn }}
             </div>
         </div>
-        <button @click="deleteDistributable">Delete</button>
+        <button @click="toggleDialogue">Delete</button>
+        <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
+            <div>Really delete this?</div>
+        </ConfirmationBox>
+        <Modal>
+
+        </Modal>
     </div>
 
 </template>

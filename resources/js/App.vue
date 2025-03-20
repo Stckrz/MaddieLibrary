@@ -78,6 +78,10 @@ select {
     justify-content: center;
 }
 
+.secondary{
+    background-color: #494057;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
