@@ -144,6 +144,7 @@ select {
 
 .contentWrapper {
     width: 100%;
+    height: 94dvh;
     display: flex;
     align-items: center;
     justify-content: center;

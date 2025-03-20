@@ -1,12 +1,14 @@
 <script>
 import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
 import Modal from '../../Components/Modal/Modal.vue';
+import EditDistributable from './EditDistributableView.vue';
 import toastMixin from '../../Mixins/toastMixin.js';
 export default {
     name: 'DistributableDetailView',
     components: {
         Modal,
         ConfirmationBox,
+        EditDistributable
     },
     props: {
         id: {
@@ -132,10 +134,12 @@ export default {
             </div>
         </div>
         <button @click="toggleDialogue">Delete</button>
+        <button @click="toggleEditModal">Edit</button>
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>
         </ConfirmationBox>
-        <Modal>
+        <Modal :modalShown="isEditing" :closeModal="toggleEditModal">
+        <EditDistributable :distributable="this.distributable" :closeModal="toggleEditModal" />
 
         </Modal>
     </div>
