@@ -47,7 +47,7 @@ class PatronController extends Controller
         $validated = $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'card_number' => 'required|string|unique:patrons,card_number|max:50',
+            'card_number' => 'required|string|max:50',
             'email' => 'nullable|email',
         ]);
 

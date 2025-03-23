@@ -1,19 +1,11 @@
-<script>
-import Modal from '../Components/Modal/Modal.vue';
-import { useToastStore } from '../Stores/toastStore.js';
-import { mapStores } from 'pinia';
-import toastMixin from '../Mixins/toastMixin.js';
-export default {
-    name: 'HomeView',
-    mixins: [
-        toastMixin
-    ],
-    methods: {
-        createToast() {
-            this.addToast("Hello I am a toast!", "success")
-        },
-    }
-}
+<script lang="ts" setup>
+import { useToastStore } from '../Stores/toastStore';
+
+const toastStore = useToastStore();
+
+const createToast = () => {
+    toastStore.addToast("Hello I am a toast!", "success");
+};
 </script>
 
 <template>
@@ -30,6 +22,7 @@ export default {
         </div>
     </div>
 </template>
+
 <style>
 .homeNavigationLinks {
     display: flex;

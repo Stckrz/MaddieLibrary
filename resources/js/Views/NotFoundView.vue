@@ -6,9 +6,8 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'NotFoundView',
-
-}
+<script lang="ts" setup>
+defineOptions({
+    name: 'PatronDetailView',
+})
 </script>

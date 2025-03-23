@@ -1,16 +1,13 @@
-<script>
-export default {
-    props: {
-        closeModal: {
-            type: Function,
-            required: true,
-        },
-        modalShown: {
-            type: Boolean,
-            required: true,
-        },
-    },
-}
+<script lang="ts" setup>
+
+defineOptions({
+    name: "Modal",
+})
+const {closeModal, modalShown} = defineProps<{
+    closeModal: () => void;
+    modalShown: boolean;
+}>()
+
 </script>
 
 <template>

@@ -1,136 +1,129 @@
-<script>
+<script lang="ts" setup>
 import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
 import Modal from '../../Components/Modal/Modal.vue';
 import EditDistributable from './EditDistributableView.vue';
-import toastMixin from '../../Mixins/toastMixin.js';
-export default {
-    name: 'DistributableDetailView',
-    components: {
-        Modal,
-        ConfirmationBox,
-        EditDistributable
-    },
-    props: {
-        id: {
-            type: String,
-            required: true,
-        },
-    },
-    mixins: [
-        toastMixin
-    ],
-    data() {
-        return {
-            distributable: {},
-            isEditing: false,
-            dialogueShown: false,
-        }
-    },
-    methods: {
-        async fetchDistributable(id) {
-            try {
-                const response = await fetch(`/api/distributables/${this.id}`)
-                this.distributable = await response.json();
-                if (this.distributable?.isbn) {
-                    this.coverUrl = `https://covers.openlibrary.org/b/isbn/${this.distributable.isbn}-M.jpg`
-                }
-            } catch (error) {
-                console.error('Error Fetching Distributable: ', error);
-            }
-        },
-        async deleteDistributable() {
-            console.log(this.distributable)
-            let distributableInputType = ""
-            switch (this.distributable.type) {
-                case "Game":
-                    distributableInputType = 'games';
-                    break;
-                case "Cd":
-                    distributableInputType = 'cds';
-                    break;
-                case "Book":
-                    distributableInputType = 'books';
-                    break;
-            }
-            try {
-                const response = await fetch(`/api/${distributableInputType}/${this.id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                if (!response.ok) {
-                    console.error('Unable to delete');
-                }
-                const data = await response.json();
-                this.addToast("Distributable successfully deleted", "success");
-                this.$router.push({ path: '/distributables' })
-            } catch (error) {
-                console.error('Error Deleting Distributable: ', error);
-            }
-        },
-        toggleDialogue() {
-            this.dialogueShown = !this.dialogueShown;
-        },
-        toggleEditModal() {
-            this.isEditing = !this.isEditing;
-        }
-    },
-    mounted() {
-        this.fetchDistributable(this.id);
+import { useToastStore } from '../../Stores/toastStore';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Distributable } from '../../models/distributables/distributable';
+
+const toastStore = useToastStore();
+defineOptions({
+    name: 'DistributableDetailView'
+})
+
+const props = defineProps<{ id: string }>();
+const router = useRouter();
+const distributable = ref<Distributable | null>(null);
+const isEditing = ref(false);
+const dialogueShown = ref(false);
+const coverUrl = ref('');
+
+onMounted(() => {
+    fetchDistributable(props.id);
+})
+
+const fetchDistributable = async (id: string) => {
+    try {
+        const response = await fetch(`/api/distributables/${id}`)
+        distributable.value = await response.json();
+        // if (distributable?.isbn) {
+        //     coverUrl.value = `https://covers.openlibrary.org/b/isbn/${distributable.value.isbn}-M.jpg`
+        // }
+    } catch (error) {
+        console.error('Error Fetching Distributable: ', error);
     }
+}
+
+const deleteDistributable = async () => {
+    console.log('ass', props.id)
+    console.log(distributable.value)
+    let distributableInputType = ""
+    switch (distributable.value?.type) {
+        case "Game":
+            distributableInputType = 'games';
+            break;
+        case "Cd":
+            distributableInputType = 'cds';
+            break;
+        case "Book":
+            distributableInputType = 'books';
+            break;
+    }
+    try {
+        const response = await fetch(`/api/${distributableInputType}/${props.id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        if (!response.ok) {
+            console.error('Unable to delete');
+        }
+        const data = await response.json();
+        toastStore.addToast("Distributable successfully deleted", "success");
+        router.push({ path: '/distributables' })
+    } catch (error) {
+        console.error('Error Deleting Distributable: ', error);
+    }
+}
+const toggleDialogue = () => {
+    dialogueShown.value = !dialogueShown.value;
+}
+const toggleEditModal = () => {
+    isEditing.value = !isEditing.value;
 }
 </script>
 <template>
     <div>
         Id:
-        {{ this.id }}
+        {{ id }}
         <div>
             Title:
-            {{ this.distributable.title }}
+            {{ distributable?.title }}
         </div>
         <div>
             Synopsis:
-            {{ this.distributable.synopsis }}
+            {{ distributable?.synopsis }}
         </div>
         <div>
             Checked in:
-            {{ this.distributable.checked_in }}
+            {{ distributable?.checked_in }}
         </div>
-        <div v-if="distributable.type === 'Cd'">
+        <div v-if="distributable?.type === 'Cd'">
             <div>
                 Artist:
-                {{ this.distributable.artist }}
+                {{ distributable?.artist }}
             </div>
             <div>
                 Release Date:
-                {{ this.distributable.released_date }}
+                {{ distributable?.released_date }}
             </div>
         </div>
-        <div v-if="distributable.type === 'Game'">
+        <div v-if="distributable?.type === 'Game'">
             <div>
                 Studio:
-                {{ this.distributable.studio }}
+                {{ distributable.studio }}
             </div>
             <div>
                 Platform:
-                {{ this.distributable.platform }}
+                {{ distributable.platform }}
             </div>
             <div>
                 Release Date
-                {{ this.distributable.release_date }}
+                {{ distributable.released_date }}
             </div>
         </div>
-        <div v-if="distributable.type === 'Book'">
+        <div v-if="distributable?.type === 'Book'">
             <div>
                 Author:
-                {{ this.distributable.author }}
+                {{ distributable.author }}
             </div>
             <div>
                 Publication Date:
-                {{ this.distributable.published_date }}
+                {{ distributable.published_date }}
             </div>
             <div>
                 ISBN:
-                {{ this.distributable.isbn }}
+                {{ distributable.isbn }}
             </div>
         </div>
         <button @click="toggleDialogue">Delete</button>
@@ -138,8 +131,8 @@ export default {
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>
         </ConfirmationBox>
-        <Modal :modalShown="isEditing" :closeModal="toggleEditModal">
-        <EditDistributable :distributable="this.distributable" :closeModal="toggleEditModal" />
+        <Modal v-if='distributable !== null' :modalShown="isEditing" :closeModal="toggleEditModal">
+            <EditDistributable :distributable="distributable" />
 
         </Modal>
     </div>

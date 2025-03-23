@@ -1,54 +1,34 @@
-<script>
-import toastMixin from '../../Mixins/toastMixin.js';
-export default {
+<script lang="ts" setup>
+import { useToastStore } from '../../Stores/toastStore';
+import {ref, watch} from 'vue';
+
+const toastStore = useToastStore();
+defineOptions({
     name: 'CreateDistributable',
-    props: {
-        closeModal: {
-            type: Function,
-            required: false
-        }
-    },
-    mixins: [
-        toastMixin
-    ],
-    data() {
-        return {
-            distributableType: "Book",
-            form: {
-                title: '',
-                author: '',
-                artist: '',
-                synopsis: '',
-                platform: '',
-                studio: '',
-                published_date: '',
-                release_date: '',
-                isbn: '',
-                checked_in: true,
-            }
-        }
-    },
-    watch: {
-        distributableType(newType, oldType) {
-            // Reset all form fields when distributableType changes
-            this.form = {
-                title: '',
-                author: '',
-                artist: '',
-                synopsis: '',
-                platform: '',
-                studio: '',
-                published_date: '',
-                release_date: '',
-                isbn: '',
-                checked_in: true,
-            };
-        }
-    },
-    methods: {
-        async createDistributable() {
+});
+
+const distributableType = ref("Book");
+const form = ref({
+title: '',
+author: '',
+artist: '',
+synopsis: '',
+platform: '',
+studio: '',
+published_date: '',
+release_date: '',
+isbn: '',
+checked_in: true,
+});
+
+
+const createToast = (message: string, status: string) => {
+    toastStore.addToast(message, status);
+};
+
+const createDistributable = async() => {
             let distributableInputType = ""
-            switch (this.distributableType) {
+            switch (distributableType.value) {
                 case "Game":
                     distributableInputType = 'games';
                     break;
@@ -59,12 +39,11 @@ export default {
                     distributableInputType = 'books';
                     break;
             }
-
             try {
                 const response = await fetch(`/api/${distributableInputType}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(this.form),
+                    body: JSON.stringify(form.value),
                 });
 
                 if (!response.ok) {
@@ -75,7 +54,7 @@ export default {
                 console.log(data.message);
 
                 // Clear the form
-                this.form = {
+                form.value = {
                     title: '',
                     author: '',
                     artist: '',
@@ -87,15 +66,27 @@ export default {
                     isbn: '',
                     checked_in: true,
                 };
-                this.addToast("Distributable created successfully!", "success");
+                createToast("Distributable created successfully!", "success");
             } catch (error) {
                 console.error('Error creating distributable:', error);
-                this.addToast("Unable to create distributable", "error");
+                createToast("Unable to create distributable", "error");
             }
-
         }
-    },
-}
+
+watch(distributableType, (newType) => {
+    form.value = {
+        title: '',
+        author: '',
+        artist: '',
+        synopsis: '',
+        platform: '',
+        studio: '',
+        published_date: '',
+        release_date: '',
+        isbn: '',
+        checked_in: true,
+    };
+});
 </script>
 
 <template>

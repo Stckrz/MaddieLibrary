@@ -1,7 +1,6 @@
 <template>
     <nav class="nav-element">
         <router-link class="nav-link" to="/">Home</router-link>
-        <!-- <router-link class="nav-link" to="/books">Books</router-link> -->
         <router-link class="nav-link" to="/distributables">Distributables</router-link>
         <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
     </nav>
@@ -14,17 +13,9 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import '../css/app.css';
-import Dropdown from './Components/Dropdown/Dropdown.vue';
 import Toast from './Components/Toast/Toast.vue';
-export default {
-    name: 'App',
-    components: {
-        Dropdown,
-        Toast
-    },
-}
 </script>
 
 <style>

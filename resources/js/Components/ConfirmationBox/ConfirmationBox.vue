@@ -1,21 +1,13 @@
-<script>
-export default {
+<script lang="ts" setup>
+defineOptions({
     name: "ConfirmationBox",
-    props: {
-        callback: {
-            type: Function,
-            required: true,
-        },
-        closeDialogue: {
-            type: Function,
-            required: true,
-        },
-        dialogueShown: {
-            type: Boolean,
-            required: true,
-        },
-    },
-}
+})
+const {callback, closeDialogue, dialogueShown} = defineProps<{
+    callback: ()=>void;
+    closeDialogue: ()=>void;
+    dialogueShown: boolean;
+}>();
+
 </script>
 
 <template>

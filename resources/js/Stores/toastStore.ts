@@ -1,10 +1,19 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useToastStore = defineStore('toast', () => {
-    const toasts = ref([]);
+interface Toast {
+    id: number,
+    message: string,
+    type: string,
+    toastTimer: number,
+    timebarKey: number,
+    isPaused: boolean
+}
 
-    const addToast = (message, type = 'success', duration = 3000) => {
+export const useToastStore = defineStore('toast', () => {
+    const toasts = ref<Toast[]>([]);
+
+    const addToast = (message: string, type = 'success', duration = 3000) => {
         const id = Date.now();
 
         const toastTimer = setTimeout(() => {
@@ -13,12 +22,12 @@ export const useToastStore = defineStore('toast', () => {
         toasts.value.push({ id, message, type, toastTimer, timebarKey: id, isPaused: false });
     };
 
-    const removeToast = (id) => {
+    const removeToast = (id: number) => {
         toasts.value = toasts.value.filter((toast) => toast.id !== id);
     };
 
-    const resetToastDuration = (id, newDuration = 3000) => {
-        const toast = toasts.value.find((t) => t.id === id);
+    const resetToastDuration = (id: number, newDuration = 3000) => {
+        const toast = toasts.value.find((t: Toast) => t.id === id);
         if (toast) {
             clearTimeout(toast.toastTimer);
             toast.timebarKey = Date.now();
@@ -28,7 +37,7 @@ export const useToastStore = defineStore('toast', () => {
             }, newDuration)
         }
     };
-    const cancelToastTimer = (id) => {
+    const cancelToastTimer = (id: number) => {
         const toast = toasts.value.find((t) => t.id === id);
         if (toast) {
             toast.isPaused = true;

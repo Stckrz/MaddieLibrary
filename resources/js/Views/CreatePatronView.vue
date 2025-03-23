@@ -1,3 +1,46 @@
+<script lang="ts" setup>
+import { useToastStore } from '../Stores/toastStore';
+import { ref } from 'vue';
+
+const form = ref(
+    {
+        lastName: '',
+        firstName: '',
+        card_number: '',
+        email: '',
+    }
+)
+const toastStore = useToastStore();
+
+const createToast = (message: string, status: string) => {
+    toastStore.addToast(message, status);
+};
+
+const createPatron = async () => {
+    try {
+        const response = await fetch('/api/patrons', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form.value),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create patron');
+        }
+
+        // Clear the form
+        form.value = {
+            lastName: '',
+            firstName: '',
+            card_number: '',
+            email: '',
+        };
+    } catch (error) {
+        console.error('Error creating patron:', error);
+        createToast("Unable to create patron", "error");
+    }
+}
+</script>
 <template>
     <h2>Add New Patron</h2>
     <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
@@ -21,53 +64,6 @@
     </form>
 </template>
 
-<script>
-import toastMixin from '../Mixins/toastMixin.js';
-export default {
-    name: 'CreatePatronView',
-    mixins: [
-        toastMixin
-    ],
-    data() {
-        return {
-            form: {
-                lastName: '',
-                firstName: '',
-                card_number: '',
-                email: '',
-            }
-        };
-    },
-    methods: {
-        async createPatron() {
-            try {
-                const response = await fetch('/api/patrons', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(this.form),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create patron');
-                }
-
-                const data = await response.json();
-
-                // Clear the form
-                this.form = {
-                    lastName: '',
-                    firstName: '',
-                    card_number: '',
-                    email: '',
-                };
-            } catch (error) {
-                console.error('Error creating patron:', error);
-                this.addToast("Unable to create patron", "error");
-            }
-        },
-    },
-}
-</script>
 <style>
 .patronFormWrapper {
     display: flex;

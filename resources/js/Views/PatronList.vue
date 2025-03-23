@@ -1,37 +1,30 @@
-<script>
-import PatronDetail from './PatronDetail.vue';
+<script lang="ts" setup>
 import CreatePatronView from './CreatePatronView.vue';
 import Modal from '../Components/Modal/Modal.vue';
-export default {
+import { ref, onMounted } from 'vue';
+
+defineOptions({
     name: 'PatronList',
-    components: {
-        Modal,
-        CreatePatronView,
-        PatronDetail
-    },
-    data() {
-        return {
-            patrons: [],
-            newPatronModalShown: false,
-        };
-    },
-    mounted() {
-        this.fetchPatrons();
-    },
-    methods: {
-        async fetchPatrons() {
-            try {
-                const response = await fetch('/api/patrons');
-                this.patrons = await response.json();
-            } catch (error) {
-                console.error('Error Fetching Patrons: ', error);
-            }
-        },
-        toggleNewPatronModal() {
-            this.newPatronModalShown = !this.newPatronModalShown
-        },
-    },
+})
+const patrons = ref([]);
+const newPatronModalShown = ref(false);
+
+const fetchPatrons = async () => {
+    try {
+        const response = await fetch('/api/patrons');
+        patrons.value = await response.json();
+    } catch (error) {
+        console.error('Error Fetching Patrons: ', error);
+    }
 }
+
+const toggleNewPatronModal = () => {
+    newPatronModalShown.value = !newPatronModalShown.value
+};
+
+onMounted(() => {
+    fetchPatrons();
+})
 </script>
 
 <template>
@@ -81,13 +74,6 @@ export default {
                 </tr>
             </tbody>
         </table>
-        <!-- <div class="patronList"> -->
-        <!--     <div class="listItem" v-for="patron in patrons" :key="patron.id"> -->
-        <!--         <strong>{{ patron.name }}</strong> -->
-        <!--         <div>card number: {{ patron.card_number }}</div> -->
-        <!--         <div>Email: {{ patron.email }}</div> -->
-        <!--     </div> -->
-        <!-- </div> -->
         <Modal :closeModal="toggleNewPatronModal" :modalShown="newPatronModalShown">
             <CreatePatronView />
         </Modal>

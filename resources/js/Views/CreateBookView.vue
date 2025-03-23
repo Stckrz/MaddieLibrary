@@ -22,58 +22,54 @@
                 <label>Isbn:</label>
                 <input class="w-3/4" v-model="form.isbn"></input>
             </div>
-            <button
-                class="w-1/3 self-center"
-                type="submit">Create</button>
+            <button class="w-1/3 self-center" type="submit">Create</button>
         </form>
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts" setup>
+import { ref } from 'vue';
+defineOptions({
     name: 'CreateBookView',
-    data() {
-        return {
-            form: {
-                title: '',
-                author: '',
-                published_date: '',
-                synopsis: '',
-                isbn: '',
-                checked_in: true,
-            }
+})
+const form = ref(
+    {
+        title: '',
+        author: '',
+        published_date: '',
+        synopsis: '',
+        isbn: '',
+        checked_in: true,
+    }
+)
+
+const createBook = async () => {
+    try {
+        const response = await fetch('/api/books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create book');
+        }
+
+        const data = await response.json();
+        console.log(data.message);
+
+        // Clear the form
+        form.value = {
+            title: '',
+            author: '',
+            published_date: '',
+            synopsis: '',
+            isbn: '',
+            checked_in: true,
         };
-    },
-    methods: {
-        async createBook() {
-            try {
-                const response = await fetch('/api/books', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(this.form),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create book');
-                }
-
-                const data = await response.json();
-                console.log(data.message);
-
-                // Clear the form
-                this.form = {
-                    title: '',
-                    author: '',
-                    published_date: '',
-                    synopsis: '',
-                    isbn: '',
-                    checked_in: true,
-                };
-            } catch (error) {
-                console.error('Error creating book:', error);
-            }
-        },
-    },
+    } catch (error) {
+        console.error('Error creating book:', error);
+    }
 }
 </script>
 <style>

@@ -1,17 +1,16 @@
-<script>
-import { mapStores } from 'pinia';
-import { useToastStore } from '../../Stores/toastStore.js';
-export default {
-    computed: {
-        ...mapStores(useToastStore)
-    },
-}
+<script lang="ts" setup>
+import { useToastStore } from '../../Stores/toastStore';
+import { storeToRefs } from 'pinia';
+const toastStore = useToastStore();
+
+// Destructure toasts from the store for reactivity
+const { toasts } = storeToRefs(toastStore);
 </script>
 
 <template>
     <div class="toast">
         <transition-group name="toast" tag="div">
-            <div v-for="toast in toastStore.toasts" :key="toast.id" :class="['toastContent', toast.type]"
+            <div v-for="toast in toasts" :key="toast.id" :class="['toastContent', toast.type]"
                 @click="toastStore.removeToast(toast.id)" @mouseover="toastStore.cancelToastTimer(toast.id)"
                 @mouseleave="toastStore.resetToastDuration(toast.id)">
                 {{ toast.message }}
@@ -50,6 +49,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
 }
+
 .error {
     border: 1px solid red;
 }
