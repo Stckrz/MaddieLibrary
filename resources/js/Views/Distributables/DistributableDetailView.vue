@@ -26,7 +26,9 @@ onMounted(() => {
 const fetchDistributable = async (id: string) => {
     try {
         const response = await fetch(`/api/distributables/${id}`)
-        distributable.value = await response.json();
+        const data = await response.json();
+        console.log(data);
+        distributable.value = data;
         // if (distributable?.isbn) {
         //     coverUrl.value = `https://covers.openlibrary.org/b/isbn/${distributable.value.isbn}-M.jpg`
         // }
@@ -73,61 +75,68 @@ const toggleEditModal = () => {
 }
 </script>
 <template>
-    <div>
-        Id:
-        {{ id }}
-        <div>
-            Title:
-            {{ distributable?.title }}
+    <div class="distributableWrapper">
+        <div class="contentContainer">
+            <div class="imageContainer"></div>
+            <div class="informationWrapper">
+                Id:
+                {{ id }}
+                <div>
+                    Title:
+                    {{ distributable?.title }}
+                </div>
+                <div>
+                    Synopsis:
+                    {{ distributable?.synopsis }}
+                </div>
+                <div>
+                    Available:
+                    {{ distributable?.checked_in }}
+                </div>
+                <div v-if="distributable?.type === 'Cd'">
+                    <div>
+                        Artist:
+                        {{ distributable?.artist }}
+                    </div>
+                    <div>
+                        Release Date:
+                        {{ distributable?.release_date }}
+                    </div>
+                </div>
+                <div v-if="distributable?.type === 'Game'">
+                    <div>
+                        Studio:
+                        {{ distributable.studio }}
+                    </div>
+                    <div>
+                        Platform:
+                        {{ distributable.platform }}
+                    </div>
+                    <div>
+                        Release Date
+                        {{ distributable.release_date }}
+                    </div>
+                </div>
+                <div v-if="distributable?.type === 'Book'">
+                    <div>
+                        Author:
+                        {{ distributable.author }}
+                    </div>
+                    <div>
+                        Publication Date:
+                        {{ distributable.published_date }}
+                    </div>
+                    <div>
+                        ISBN:
+                        {{ distributable.isbn }}
+                    </div>
+                </div>
+            </div>
+            </div>
+        <div class="buttonBox">
+            <button @click="toggleDialogue">Delete</button>
+            <button @click="toggleEditModal">Edit</button>
         </div>
-        <div>
-            Synopsis:
-            {{ distributable?.synopsis }}
-        </div>
-        <div>
-            Checked in:
-            {{ distributable?.checked_in }}
-        </div>
-        <div v-if="distributable?.type === 'Cd'">
-            <div>
-                Artist:
-                {{ distributable?.artist }}
-            </div>
-            <div>
-                Release Date:
-                {{ distributable?.released_date }}
-            </div>
-        </div>
-        <div v-if="distributable?.type === 'Game'">
-            <div>
-                Studio:
-                {{ distributable.studio }}
-            </div>
-            <div>
-                Platform:
-                {{ distributable.platform }}
-            </div>
-            <div>
-                Release Date
-                {{ distributable.released_date }}
-            </div>
-        </div>
-        <div v-if="distributable?.type === 'Book'">
-            <div>
-                Author:
-                {{ distributable.author }}
-            </div>
-            <div>
-                Publication Date:
-                {{ distributable.published_date }}
-            </div>
-            <div>
-                ISBN:
-                {{ distributable.isbn }}
-            </div>
-        </div>
-        <button @click="toggleDialogue">Delete</button>
-        <button @click="toggleEditModal">Edit</button>
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>
         </ConfirmationBox>
@@ -137,4 +146,33 @@ const toggleEditModal = () => {
         </Modal>
     </div>
 
+
 </template>
+<style scoped>
+.distributableWrapper{
+    align-self: flex-start;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid white;
+}
+.contentContainer{
+    display: flex;
+    padding: 4px;
+}
+.imageContainer{
+    border: 1px dotted red;
+    width: 20%;
+}
+.informationWrapper{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+}
+.buttonBox{
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+</style>

@@ -14,8 +14,8 @@ export default defineConfig({
             }
         },
         hmr: {
-            // host: '127.0.0.1', // Change this value for your local network ip address(noodle)
-            host: '192.168.0.108', // Change this value for your local network ip address(noodle)
+            host: '127.0.0.1', // Change this value for your local network ip address(noodle)
+            // host: '192.168.0.108', // Change this value for your local network ip address(noodle)
             // host: '192.168.1.54', // Change this value for your local network ip address(home)
             port: 5173, // Or your app's standard port
         },

@@ -159,22 +159,6 @@ watch(sortCategory, (newType) => {
     justify-content: center;
 }
 
-.tableListItem {
-    border-radius: 50px;
-    transition: background-color 0.5s linear, color 0.5s linear;
-    cursor: pointer;
-}
-
-.tableListItem:hover {
-    background-color: gray;
-    color: black;
-}
-
-.tableHeaderContainer {
-    display: flex;
-    align-items: flex-center;
-    cursor: pointer;
-}
 
 .sort-wrapper {
     display: flex;

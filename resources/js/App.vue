@@ -37,7 +37,9 @@ button:hover {
 input,
 textarea {
     background-color: gray;
+    color: black;
     border-radius: 0.125em;
+    padding: 4px;
 }
 
 table,
@@ -145,5 +147,22 @@ select {
     .fieldContainer {
         flex-direction: column;
     }
+}
+
+.tableListItem {
+    border-radius: 50px;
+    transition: background-color 0.5s linear, color 0.5s linear;
+    cursor: pointer;
+}
+
+.tableListItem:hover {
+    background-color: gray;
+    color: black;
+}
+
+.tableHeaderContainer {
+    display: flex;
+    align-items: flex-center;
+    cursor: pointer;
 }
 </style>

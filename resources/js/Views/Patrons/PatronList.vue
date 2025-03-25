@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import CreatePatronView from './CreatePatronView.vue';
-import Modal from '../Components/Modal/Modal.vue';
+import Modal from '../../Components/Modal/Modal.vue';
 import { ref, onMounted } from 'vue';
+import { Patron } from '../../models/patrons/patronModel';
 
 defineOptions({
     name: 'PatronList',
-})
-const patrons = ref([]);
+});
+
+const patrons = ref<Patron[]>([]);
 const newPatronModalShown = ref(false);
 
 const fetchPatrons = async () => {
@@ -16,7 +18,7 @@ const fetchPatrons = async () => {
     } catch (error) {
         console.error('Error Fetching Patrons: ', error);
     }
-}
+};
 
 const toggleNewPatronModal = () => {
     newPatronModalShown.value = !newPatronModalShown.value
@@ -25,6 +27,7 @@ const toggleNewPatronModal = () => {
 onMounted(() => {
     fetchPatrons();
 })
+
 </script>
 
 <template>
@@ -51,7 +54,7 @@ onMounted(() => {
                         Email
                     </td>
                 </tr>
-                <tr v-for="patron in patrons" :key="patron.id">
+                <tr v-for="patron in patrons" :key="patron.id" class="tableListItem">
                     <td>
                         <router-link :to="{
                             name: 'patron-detail',
@@ -83,6 +86,7 @@ onMounted(() => {
 <style>
 .patronListContainer {
     width: 100%;
+    align-self: flex-start;
 }
 
 .patronList {
@@ -91,7 +95,7 @@ onMounted(() => {
 
 .patronHeaderBox {
     display: flex;
-    justify-content: space-between;
+    justify-content: spacebetween;
     width: 100%;
     padding: 4px;
 }

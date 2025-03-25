@@ -14,7 +14,7 @@ const createToast = () => {
             Welcome To The Library!
         </h1>
         <div class="homeNavigationLinks">
-            <router-link class="nav-link" to="/books">Books</router-link>
+            <router-link class="nav-link" to="/distributables">Distributables</router-link>
             <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
             <button v-on:click="createToast">
                 Toast

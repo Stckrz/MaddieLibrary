@@ -21,11 +21,6 @@ isbn: '',
 checked_in: true,
 });
 
-
-const createToast = (message: string, status: string) => {
-    toastStore.addToast(message, status);
-};
-
 const createDistributable = async() => {
             let distributableInputType = ""
             switch (distributableType.value) {
@@ -66,10 +61,10 @@ const createDistributable = async() => {
                     isbn: '',
                     checked_in: true,
                 };
-                createToast("Distributable created successfully!", "success");
+                toastStore.addToast("Distributable created successfully!", "success");
             } catch (error) {
                 console.error('Error creating distributable:', error);
-                createToast("Unable to create distributable", "error");
+                toastStore.addToast("Unable to create distributable", "error");
             }
         }
 

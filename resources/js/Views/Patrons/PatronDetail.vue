@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { useToastStore } from '../Stores/toastStore';
+import { useToastStore } from '../../Stores/toastStore';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import { Patron } from '../../models/patrons/patronModel';
 
 defineOptions({
     name: 'PatronDetailView',
@@ -10,7 +11,7 @@ const route = useRoute();
 const id = route.params.id as string;
 
 const toastStore = useToastStore();
-const patron = ref<any>({});
+const patron = ref<Patron | null>(null);
 const isEditing = ref(false);
 const form = ref({
     lastName: '',
@@ -18,11 +19,6 @@ const form = ref({
     card_number: '',
     email: '',
 })
-
-const createToast = (message: string, status: string) => {
-    toastStore.addToast(message, status);
-};
-
 
 const fetchPatron = async (patronId: string) => {
     try {
@@ -39,7 +35,7 @@ const fetchPatron = async (patronId: string) => {
 }
 const editPatron = async () => {
     try {
-        const response = await fetch(`/api/patrons/${patron.value.id}`, {
+        const response = await fetch(`/api/patrons/${patron?.value?.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +55,7 @@ const editPatron = async () => {
         // Clear the form
     } catch (error: any) {
         if(error.message){
-        createToast(error.message, "error");
+        toastStore.addToast(error.message, "error");
         }
         console.error('Error editing patron:', error);
     }
@@ -73,54 +69,51 @@ onMounted(() => {
 
 </script>
 <template>
-    <div class="bookDetailContainer">
+    <div v-if="patron" class="bookDetailContainer">
         <h1>Patron detail page for {{ patron.firstName }} {{ patron.lastName }}</h1>
-        <div
-            class="flex flex-col md:flex-row w-full justify-between items-center my-4 px-4 md:px-0 gap-2 md:gap-0">
-            <div class="flex flex-col gap-2 justify-center items-start md:mx-4 p-2 border w-full">
+            <div class="patronTableContainer">
                 <div v-if="!isEditing">
                     Last Name: {{ patron.lastName }}
                 </div>
-                <div class="w-full flex justify-between" v-else>
-                    Last Name:
-                    <input class="w-full" type="text" placeholder={{form.lastName}} v-model="form.lastName" />
+                <div class="detailInputItem" v-else>
+                    <div class="patronFormLabel">Last Name:</div>
+                    <input class="patronFormInput" type="text" placeholder={{form.lastName}} v-model="form.lastName" />
                 </div>
                 <div v-if="!isEditing">
                     First Name: {{ patron.firstName }}
                 </div>
-                <div class="w-full flex justify-between" v-else>
-                    Last Name:
-                    <input class="w-full" type="text" placeholder={{form.firstName}} v-model="form.firstName" />
+                <div class="detailInputItem" v-else>
+                    <div class="patronFormLabel">Last Name:</div>
+                    <input class="patronFormInput" type="text" placeholder={{form.firstName}} v-model="form.firstName" />
                 </div>
 
                 <div v-if="!isEditing">
                     Card_number: {{ patron.card_number }}
                 </div>
-                <div class="md:w-full flex justify-between" v-else>
-                    Card_number:
-                    <input class="w-full" type="text" v-model="form.card_number" />
+                <div class="detailInputItem" v-else>
+                <div class="patronFormLabel">Card_number:</div>
+                    <input class="patronFormInput" type="text" v-model="form.card_number" />
                 </div>
 
                 <div v-if="!isEditing">
                     Email: {{ patron.email }}
                 </div>
-                <div class="md:w-full flex justify-between" v-else>
-                    Email:
-                    <input class="w-full" type="email" v-model="form.email" />
+                <div class="detailInputItem" v-else>
+                    <div class="patronFormLabel">Email:</div>
+                    <input class="patronFormInput" type="email" v-model="form.email" />
                 </div>
 
-                <div className="flex gap-2">
+                <div className="patronFormButtonBox">
                     <button v-on:click="editHandler">
                         {{ !isEditing ? "Edit" : "Cancel" }}
                     </button>
                     <button v-if="isEditing" v-on:click="editPatron">Submit</button>
                 </div>
             </div>
-        </div>
     </div>
 
 </template>
-<style>
+<style scoped>
 h1 {
     font-size: 24px;
 }
@@ -132,5 +125,34 @@ h1 {
     width: 100%;
     height: 100%;
     border: 1px solid gray;
+}
+
+.detailInputItem{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.patronTableContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border: 1px solid gray;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+.patronFormInput{
+    flex-grow: 1;
+}
+.patronFormLabel{
+    width: 16%;
+}
+.patronFormButtonBox{
+    display: flex;
+    gap: 0.5rem;
 }
 </style>

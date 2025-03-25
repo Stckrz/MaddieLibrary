@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useToastStore } from '../Stores/toastStore';
+import { useToastStore } from '../../Stores/toastStore';
 import { ref } from 'vue';
 
 const form = ref(
@@ -11,10 +11,6 @@ const form = ref(
     }
 )
 const toastStore = useToastStore();
-
-const createToast = (message: string, status: string) => {
-    toastStore.addToast(message, status);
-};
 
 const createPatron = async () => {
     try {
@@ -37,7 +33,7 @@ const createPatron = async () => {
         };
     } catch (error) {
         console.error('Error creating patron:', error);
-        createToast("Unable to create patron", "error");
+        toastStore.addToast("Unable to create patron", "error");
     }
 }
 </script>

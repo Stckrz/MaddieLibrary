@@ -39,10 +39,6 @@ const form = ref<FormFields>({
     checked_in: null,
 });
 
-const createToast = (message: string, status: string) => {
-    toastStore.addToast(message, status);
-};
-
 const populateForm = () => {
     distributableType.value = props.distributable.type;
     form.value = {
@@ -54,7 +50,7 @@ const populateForm = () => {
         isbn: props.distributable.type === "Book" ? props.distributable.isbn : null,
         platform: props.distributable.type === "Game" ? props.distributable.platform : null,
         studio: props.distributable.type === "Game" ? props.distributable.studio : null,
-        release_date: props.distributable.type === "Game" || props.distributable.type === "Cd" ? props.distributable.released_date : null,
+        release_date: props.distributable.type === "Game" || props.distributable.type === "Cd" ? props.distributable.release_date : null,
         artist: props.distributable.type === "Cd" ? props.distributable.artist : null,
     };
 };
@@ -83,11 +79,10 @@ const editDistributable = async () => {
         if (!response.ok) {
             throw new Error('Failed to edit distributable');
         };
-
-        createToast("Distributable edited successfully!", "success");
+        toastStore.addToast("Distributable edited successfully!", "success");
     } catch (error) {
         console.error('Error editing distributable:', error);
-        createToast("Unable to edit distributable", "error");
+        toastStore.addToast("Unable to edit distributable", "error");
     }
 };
 
