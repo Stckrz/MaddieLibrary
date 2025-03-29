@@ -33,7 +33,11 @@ const removeFromCart = (id: number) => {
 
 <template>
     <Teleport to="body">
-        <div v-if="cartState.patron" class="cart" :class="{ open: cartShown, closed: !cartShown }">
+        <div
+            v-if="cartState.patron"
+            class="cart"
+            :class="{ open: cartShown, closed: !cartShown }"
+        >
             <div class="cartCollapseTag" @click="toggleCartShown">
                 <div v-if="!cartShown">
                     <FaCaretLeft class='caretIcon'/>
@@ -58,7 +62,11 @@ const removeFromCart = (id: number) => {
                 </div>
             </div>
         </div>
-        <ConfirmationBox :callback="clearCart" :dialogue-shown="dialogueShown" :close-dialogue="toggleDialogueShown">
+        <ConfirmationBox
+            :callback="clearCart"
+            :dialogue-shown="dialogueShown"
+            :close-dialogue="toggleDialogueShown"
+        >
             Really clear cart?
         </ConfirmationBox>
     </Teleport>

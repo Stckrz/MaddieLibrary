@@ -22,7 +22,6 @@ const router = useRouter();
 const distributable = ref<Distributable | null>(null);
 const isEditing = ref(false);
 const dialogueShown = ref(false);
-const coverUrl = ref('');
 
 onMounted(() => {
     fetchDistributable(props.id);
@@ -32,19 +31,13 @@ const fetchDistributable = async (id: string) => {
     try {
         const response = await fetch(`/api/distributables/${id}`)
         const data = await response.json();
-        console.log(data);
         distributable.value = data;
-        // if (distributable?.isbn) {
-        //     coverUrl.value = `https://covers.openlibrary.org/b/isbn/${distributable.value.isbn}-M.jpg`
-        // }
     } catch (error) {
         console.error('Error Fetching Distributable: ', error);
     }
 }
 
 const deleteDistributable = async () => {
-    console.log('ass', props.id)
-    console.log(distributable.value)
     let distributableInputType = ""
     switch (distributable.value?.type) {
         case "Game":
@@ -84,6 +77,7 @@ const addToCart = () => {
     }
 }
 </script>
+
 <template>
     <div class="distributableWrapper">
         <div class="contentContainer">
@@ -100,8 +94,10 @@ const addToCart = () => {
                     {{ distributable?.synopsis }}
                 </div>
                 <div>
-                    Available:
-                    {{ distributable?.checked_in }}
+                    <span>Available: </span>
+                    <span :class="distributable?.checked_in ? 'checkedIn' : 'checkedOut'" >
+                        {{ distributable?.checked_in ? 'Yes' : 'No' }}
+                    </span>
                 </div>
                 <div v-if="distributable?.type === 'Cd'">
                     <div>
@@ -146,19 +142,17 @@ const addToCart = () => {
         <div class="buttonBox">
             <button @click="toggleDialogue">Delete</button>
             <button @click="toggleEditModal">Edit</button>
-            <button @click="addToCart" v-if="cartState.patron">Add</button>
+            <button @click="addToCart" v-if="cartState.patron && distributable?.checked_in">Add</button>
         </div>
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>
         </ConfirmationBox>
         <Modal v-if='distributable !== null' :modalShown="isEditing" :closeModal="toggleEditModal">
             <EditDistributable :distributable="distributable" />
-
         </Modal>
     </div>
-
-
 </template>
+
 <style scoped>
 .distributableWrapper{
     align-self: flex-start;

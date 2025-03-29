@@ -93,6 +93,7 @@ watch(sortCategory, (newType) => {
                             </div>
                         </th>
                         <th>Published</th>
+                        <th>Available</th>
                     </tr>
                     <tr v-for="distributable in distributables" :key="distributable.id" class="tableListItem" :to="{
                         name: 'distributable-detail',
@@ -104,11 +105,14 @@ watch(sortCategory, (newType) => {
                         <td>
                             {{ distributable.title }}
                         </td>
-                        <td v-if="distributable.published_date">
+                        <td v-if="distributable.type === 'Book' && distributable.published_date">
                             {{ new Date(distributable.published_date).toLocaleDateString() }}
                         </td>
-                        <td v-if="distributable.release_date">
+                        <td v-if="(distributable.type === 'Cd' || distributable.type === 'Game') && distributable.release_date">
                             {{ new Date(distributable.release_date).toLocaleDateString() }}
+                        </td>
+                        <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
+                            {{distributable.checked_in ? 'Yes' : 'No'}}
                         </td>
                     </tr>
                 </tbody>

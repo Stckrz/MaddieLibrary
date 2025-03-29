@@ -22,6 +22,10 @@ import Cart from './Views/Cart/Cart.vue';
 </script>
 
 <style>
+h1{
+    font-size: 24px;
+    font-weight: bold;
+}
 button {
     border-radius: 0.25em;
     background-color: gray;
@@ -167,5 +171,12 @@ select {
     display: flex;
     align-items: flex-center;
     cursor: pointer;
+}
+
+.checkedIn{
+    color: green;
+}
+.checkedOut{
+    color: red;
 }
 </style>

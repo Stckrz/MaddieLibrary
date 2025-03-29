@@ -30,6 +30,7 @@ onMounted(() => {
 
 </script>
 
+                    }" @click="$router.push({ name: 'distributable-detail', params: { id: distributable.id } })">
 <template>
     <div class="patronListContainer">
         <div class="patronHeaderBox">
@@ -54,14 +55,9 @@ onMounted(() => {
                         Email
                     </td>
                 </tr>
-                <tr v-for="patron in patrons" :key="patron.id" class="tableListItem">
+                <tr v-for="patron in patrons" :key="patron.id" class="tableListItem" @click="$router.push({name: 'patron-detail', params: {id: patron.id}})">
                     <td>
-                        <router-link :to="{
-                            name: 'patron-detail',
-                            params: { id: patron.id }
-                        }">
-                            {{ patron.lastName }}
-                        </router-link>
+                        {{ patron.lastName }}
                     </td>
                     <td>
                         <router-link :to="{
