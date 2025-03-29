@@ -6,6 +6,11 @@ import { useToastStore } from '../../Stores/toastStore';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Distributable } from '../../models/distributables/distributable';
+import { useCartStore } from '../../Stores/cartStore';
+import { storeToRefs } from 'pinia';
+
+const cartStore = useCartStore();
+const { cartState } = storeToRefs(cartStore);
 
 const toastStore = useToastStore();
 defineOptions({
@@ -73,6 +78,11 @@ const toggleDialogue = () => {
 const toggleEditModal = () => {
     isEditing.value = !isEditing.value;
 }
+const addToCart = () => {
+    if(distributable.value){
+        cartStore.addToCart(distributable.value)
+    }
+}
 </script>
 <template>
     <div class="distributableWrapper">
@@ -136,6 +146,7 @@ const toggleEditModal = () => {
         <div class="buttonBox">
             <button @click="toggleDialogue">Delete</button>
             <button @click="toggleEditModal">Edit</button>
+            <button @click="addToCart" v-if="cartState.patron">Add</button>
         </div>
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>

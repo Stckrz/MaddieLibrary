@@ -4,6 +4,7 @@ import DistributablesListView from '../Views/Distributables/DistributablesListVi
 import DistributableDetailView from '../Views/Distributables/DistributableDetailView.vue';
 import PatronList from '../Views/Patrons/PatronList.vue';
 import PatronDetailView from '../Views/Patrons/PatronDetail.vue';
+import CartCheckout from '../Views/Cart/CartCheckout.vue';
 import NotFoundView from '../Views/NotFoundView.vue';
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
         name: 'patron-detail',
         component: PatronDetailView,
         props: true,
+    },
+    {
+        path: '/cart/checkout',
+        name: 'cart-checkout',
+        component: CartCheckout,
     },
     {
         path: '/:pathMatch(.*)*',

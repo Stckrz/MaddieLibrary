@@ -11,11 +11,14 @@
             </Toast>
         </Teleport>
     </div>
+
+            <div><Cart /></div>
 </template>
 
 <script lang="ts" setup>
 import '../css/app.css';
 import Toast from './Components/Toast/Toast.vue';
+import Cart from './Views/Cart/Cart.vue';
 </script>
 
 <style>

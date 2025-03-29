@@ -3,6 +3,10 @@ import { useToastStore } from '../../Stores/toastStore';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { Patron } from '../../models/patrons/patronModel';
+import { useCartStore } from '../../Stores/cartStore';
+import { storeToRefs } from 'pinia';
+const cartStore = useCartStore();
+const { cartState } = storeToRefs(cartStore);
 
 defineOptions({
     name: 'PatronDetailView',
@@ -63,6 +67,12 @@ const editPatron = async () => {
 const editHandler = () => {
     isEditing.value = !isEditing.value
 }
+
+const addPatronToCart = () => {
+    if(patron.value){
+        cartStore.updatePatron(patron.value);
+    }
+}
 onMounted(() => {
     fetchPatron(id);
 })
@@ -108,6 +118,7 @@ onMounted(() => {
                         {{ !isEditing ? "Edit" : "Cancel" }}
                     </button>
                     <button v-if="isEditing" v-on:click="editPatron">Submit</button>
+                    <button @click="addPatronToCart" v-if="cartState.patron === null">Create Order</button>
                 </div>
             </div>
     </div>

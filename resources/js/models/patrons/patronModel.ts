@@ -1,7 +1,7 @@
 export interface Patron{
     id: number,
     lastName: string,
-    firstName: '',
-    card_number: '',
-    email: '',
+    firstName: string,
+    card_number: string,
+    email: string,
 }
