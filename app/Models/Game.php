@@ -10,10 +10,11 @@ class Game extends Distributable
     use HasFactory;
     protected $fillable = [
         'title',
-        'studio',
+        'synopsis',
+        'img_url',
+        'thumbnail',
         'platform',
         'release_date',
-        'synopsis',
         'checked_in',
     ];
     protected $casts = [

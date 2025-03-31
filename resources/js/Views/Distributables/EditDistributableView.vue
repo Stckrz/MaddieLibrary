@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Distributable } from '../../models/distributables/distributable.js';
+import { Distributable, FormFields } from '../../models/distributables/distributable.js';
 import { useToastStore } from '../../Stores/toastStore';
 import { ref, watch } from 'vue';
 
@@ -14,23 +14,13 @@ const props = defineProps<{
 
 const distributableType = ref('');
 
-interface FormFields{
-    title: string | null,
-    author: string | null,
-    artist: string | null,
-    synopsis: string | null,
-    platform: string | null,
-    studio: string | null,
-    published_date: string | null,
-    release_date: string | null,
-    isbn: string | null,
-    checked_in: boolean | null,
-}
 const form = ref<FormFields>({
     title: null,
     author: null,
     artist: null,
     synopsis: null,
+    img_url: null,
+    thumbnail: null,
     platform: null,
     studio: null,
     published_date: null,
@@ -48,9 +38,11 @@ const populateForm = () => {
         author: props.distributable.type === "Book" ? props.distributable.author : null,
         published_date: props.distributable.type === "Book" ? props.distributable.published_date : null,
         isbn: props.distributable.type === "Book" ? props.distributable.isbn : null,
-        platform: props.distributable.type === "Game" ? props.distributable.platform : null,
-        studio: props.distributable.type === "Game" ? props.distributable.studio : null,
-        release_date: props.distributable.type === "Game" || props.distributable.type === "Cd" ? props.distributable.release_date : null,
+        platform: (props.distributable.type === "Game" || props.distributable.type === "Movie") ? props.distributable.platform : null,
+        studio: null,
+        img_url: props.distributable.img_url,
+        thumbnail: props.distributable.thumbnail,
+        release_date: props.distributable.type === "Game" || props.distributable.type === "Cd" || props.distributable.type === "Movie" ? props.distributable.release_date : null,
         artist: props.distributable.type === "Cd" ? props.distributable.artist : null,
     };
 };
@@ -66,6 +58,9 @@ const editDistributable = async () => {
             break;
         case "Book":
             distributableInputType = 'books';
+            break;
+        case "Movie":
+            distributableInputType = 'movies';
             break;
     }
 
@@ -106,12 +101,6 @@ watch(() => props.distributable, (newVal) => {
                 <input id="title" name="title" v-model="form.title" type="text" aria-required="true" class="form-input"
                     required />
             </div>
-            <div class="form-group">
-                <label for="synopsis" class="form-label">Synopsis
-                </label>
-                <textarea id="synopsis" name="synopsis" v-model="form.synopsis" type="text" aria-required="true"
-                    class="form-input" />
-            </div>
         </div>
         <div v-if="distributableType === 'Book'" class="fieldContainer">
             <div class="form-group">
@@ -144,10 +133,17 @@ watch(() => props.distributable, (newVal) => {
         </div>
         <div v-if="distributableType === 'Game'" class="fieldContainer">
             <div class="form-group">
-                <label for="studio" class="form-label">Studio</label>
-                <input id="studio" name="studio" v-model="form.studio" type="text" aria-required="true"
-                    class="form-input" />
+                <label for="platform" class="form-label">Platform</label>
+                <input id="platform" name="platform" v-model="form.platform" type="text" aria-required="true"
+                    class="form-input" required />
             </div>
+            <div class="form-group">
+                <label for="release_date" class="form-label">Release Date</label>
+                <input id="release_date" name="release_date" v-model="form.release_date" type="date"
+                    aria-required="true" class="form-input" />
+            </div>
+        </div>
+        <div v-if="distributableType === 'Movie'" class="fieldContainer">
             <div class="form-group">
                 <label for="platform" class="form-label">Platform</label>
                 <input id="platform" name="platform" v-model="form.platform" type="text" aria-required="true"
@@ -159,6 +155,25 @@ watch(() => props.distributable, (newVal) => {
                     aria-required="true" class="form-input" />
             </div>
         </div>
+
+            <div class="form-group">
+                <label for="img_url" class="form-label">img_url
+                </label>
+                <input id="img_url" name="img_url" v-model="form.img_url" type="text" aria-required="true"
+                    class="form-input" />
+            </div>
+            <div class="form-group">
+                <label for="thumbnail" class="form-label">thumbnail
+                </label>
+                <input id="thumbnail" name="thumbnail" v-model="form.thumbnail" type="text" aria-required="true"
+                    class="form-input" />
+            </div>
+            <div class="form-group">
+                <label for="synopsis" class="form-label">Synopsis
+                </label>
+                <textarea id="synopsis" name="synopsis" v-model="form.synopsis" type="text" aria-required="true"
+                    class="form-input" />
+            </div>
         <button type="submit">Submit</button>
     </form>
 </template>

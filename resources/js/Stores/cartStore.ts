@@ -21,7 +21,6 @@ export const useCartStore = defineStore('cart', () => {
     };
 
     const removeFromCart: (id: number) => void = (id: number) => {
-        console.log(cartState.value.cartDistributables.filter(cartDistributable => cartDistributable.id !== id))
         cartState.value.cartDistributables = cartState.value.cartDistributables.filter(cartDistributable => cartDistributable.id !== id);
     };
 

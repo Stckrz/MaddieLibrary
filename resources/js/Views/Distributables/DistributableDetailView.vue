@@ -49,6 +49,9 @@ const deleteDistributable = async () => {
         case "Book":
             distributableInputType = 'books';
             break;
+        case "Movie":
+            distributableInputType = 'movies';
+            break;
     }
     try {
         const response = await fetch(`/api/${distributableInputType}/${props.id}`, {
@@ -81,17 +84,13 @@ const addToCart = () => {
 <template>
     <div class="distributableWrapper">
         <div class="contentContainer">
-            <div class="imageContainer"></div>
+            <div class="imageContainer"><img :src="distributable?.img_url" /></div>
             <div class="informationWrapper">
                 Id:
                 {{ id }}
                 <div>
                     Title:
                     {{ distributable?.title }}
-                </div>
-                <div>
-                    Synopsis:
-                    {{ distributable?.synopsis }}
                 </div>
                 <div>
                     <span>Available: </span>
@@ -111,15 +110,11 @@ const addToCart = () => {
                 </div>
                 <div v-if="distributable?.type === 'Game'">
                     <div>
-                        Studio:
-                        {{ distributable.studio }}
-                    </div>
-                    <div>
                         Platform:
                         {{ distributable.platform }}
                     </div>
                     <div>
-                        Release Date
+                        Release Date:
                         {{ distributable.release_date }}
                     </div>
                 </div>
@@ -136,6 +131,10 @@ const addToCart = () => {
                         ISBN:
                         {{ distributable.isbn }}
                     </div>
+                </div>
+                <div>
+                    Synopsis:
+                    {{ distributable?.synopsis }}
                 </div>
             </div>
             </div>
@@ -166,7 +165,6 @@ const addToCart = () => {
     padding: 4px;
 }
 .imageContainer{
-    border: 1px dotted red;
     width: 20%;
 }
 .informationWrapper{

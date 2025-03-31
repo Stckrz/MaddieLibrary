@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { useCartStore } from '../../Stores/cartStore';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { FaCaretLeft, FaCaretRight } from "vue3-icons/fa";
 import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
 
@@ -14,6 +14,8 @@ defineOptions({
 
 const dialogueShown = ref(false);
 const cartShown = ref(false);
+const isFlashing = ref(false);
+
 const toggleCartShown = () => {
     cartShown.value = !cartShown.value;
 }
@@ -29,6 +31,20 @@ const removeFromCart = (id: number) => {
     cartStore.removeFromCart(id)
 }
 
+//This is the logic for changing the class to flash the border when an item is added to cart.
+const flashBorder = () => {
+    isFlashing.value = true;
+    setTimeout(()=>{
+        isFlashing.value = false;
+    }, 500)
+}
+//watching the length of the cartDistributables array
+watch(()=>cartState.value.cartDistributables.length, () => {
+    if(!cartShown.value){
+        flashBorder();
+    }
+});
+
 </script>
 
 <template>
@@ -38,7 +54,11 @@ const removeFromCart = (id: number) => {
             class="cart"
             :class="{ open: cartShown, closed: !cartShown }"
         >
-            <div class="cartCollapseTag" @click="toggleCartShown">
+            <div
+                class="cartCollapseTag"
+                @click="toggleCartShown"
+                        :class="isFlashing ? 'tagHighlighted' : ''"
+            >
                 <div v-if="!cartShown">
                     <FaCaretLeft class='caretIcon'/>
                 </div>
@@ -85,11 +105,14 @@ const removeFromCart = (id: number) => {
     padding: 10px;
     height: 50%;
     background-color: var(--main-bg-color);
-    transition: border 0.25s linear;
+    transition: border 0.25s linear, box-shadow 0.25s linear;
 }
 .cartCollapseTag:hover{
     border: 2px solid white;
     border-right: 0;
+}
+.tagHighlighted{
+    box-shadow: 0px 0px 1px 2px white
 }
 .cartContent{
     border: 1px solid white;

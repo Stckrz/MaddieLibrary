@@ -18,7 +18,6 @@ onMounted(() => {
     fetchDistributables();
 })
 
-
 const fetchDistributables = async () => {
     try {
         const response = await fetch(`/api/${sortCategory.value}`);
@@ -42,7 +41,7 @@ const sortDistributables = async (sortBy: string) => {
     }
 };
 
-watch(sortCategory, (newType) => {
+watch(sortCategory, () => {
     fetchDistributables();
 });
 </script>
@@ -68,16 +67,19 @@ watch(sortCategory, (newType) => {
                     <input id="Cds" type="radio" name="sort_category" value="cds" v-model="sortCategory" />
                     Cds
                 </label>
+                <label for="Movies" class="sortItem">
+                    <input id="Movies" type="radio" name="sort_category" value="movies" v-model="sortCategory" />
+                    Movies
+                </label>
             </div>
-            <button v-on:click="toggleNewBookModal">New Distributable</button>
+            <button v-on:click="toggleNewBookModal">New</button>
         </div>
         <div class="tableSectionWrapper">
             <div class="bookListHeaderContainer">
                 <h1>Distributables</h1>
             </div>
             <table class="bookTable">
-
-                <tbody>
+                <thead>
                     <tr>
                         <th v-on:click="sortDistributables('type')">
                             <div class="tableHeaderContainer">
@@ -95,10 +97,21 @@ watch(sortCategory, (newType) => {
                         <th>Published</th>
                         <th>Available</th>
                     </tr>
-                    <tr v-for="distributable in distributables" :key="distributable.id" class="tableListItem" :to="{
-                        name: 'distributable-detail',
-                        params: { id: distributable.id }
-                    }" @click="$router.push({ name: 'distributable-detail', params: { id: distributable.id } })">
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="distributable in distributables"
+                        :key="distributable.id"
+                        class="tableListItem"
+                        :to="{
+                            name: 'distributable-detail',
+                            params: { id: distributable.id }
+                        }"
+                        @click="$router.push({
+                            name: 'distributable-detail',
+                            params: { id: distributable.id }
+                        })"
+                    >
                         <td>
                             {{ distributable.type }}
                         </td>
@@ -108,7 +121,11 @@ watch(sortCategory, (newType) => {
                         <td v-if="distributable.type === 'Book' && distributable.published_date">
                             {{ new Date(distributable.published_date).toLocaleDateString() }}
                         </td>
-                        <td v-if="(distributable.type === 'Cd' || distributable.type === 'Game') && distributable.release_date">
+                        <td v-if="(
+                            distributable.type === 'Cd'
+                                || distributable.type === 'Game'
+                                || distributable.type === 'Movie'
+                            ) && distributable.release_date">
                             {{ new Date(distributable.release_date).toLocaleDateString() }}
                         </td>
                         <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
@@ -127,9 +144,21 @@ watch(sortCategory, (newType) => {
 </template>
 
 <style scoped>
+thead, th{
+    position: sticky;
+    background-color: var(--main-bg-color);
+    top: 0;
+}
+
+table{
+    border-collapse: collapse;
+}
+
 .tableSectionWrapper {
-    height: 100%;
     width: 80%;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
 }
 
 .sidebar {
@@ -171,5 +200,15 @@ watch(sortCategory, (newType) => {
 
 .sortItem {
     cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+    .sidebar{
+        margin: 0;
+        position: absolute;
+        bottom: 0;
+        height: 20%;
+        width: 100%;
+    }
 }
 </style>

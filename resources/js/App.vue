@@ -86,6 +86,7 @@ select {
     display: flex;
     flex-direction: column;
     margin: 2px;
+    flex-grow: 1;
 }
 
 .form-label {
@@ -146,6 +147,7 @@ select {
     width: 100%;
     height: 94dvh;
     display: flex;
+    margin-top: 4px;
     align-items: center;
     justify-content: center;
 }
@@ -179,4 +181,21 @@ select {
 .checkedOut{
     color: red;
 }
+
+::-webkit-scrollbar {
+    width: 20px;
+border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+    background-color: gray;
+    border-radius: 0.125rem;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 1px solid gray;
+    background: var(--main-bg-color);
+    border-radius: 0.25rem;
+}
+
 </style>

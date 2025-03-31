@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'giantBomb' => [
+        'key' => env('GIANTBOMB_API_KEY'),
+    ]
+
 ];
