@@ -27,6 +27,7 @@ const searchDistributable = async () => {
             break;
     }
 }
+
 const parseSelectedGame = (item: GiantBombGame) => {
     searchString.value = '';
     if(debounceTimeout) clearTimeout(debounceTimeout);
@@ -61,9 +62,9 @@ watch(searchString, () => {
         <input id="searchInput" name="searchInput" class="form-input" v-model='searchString'/>
         <div v-if="searchedGames.length>0" class="resultList">
             <div v-if="distributableType === 'Game'" v-for="game in searchedGames" class="gameResult">
-                <span @click="parseSelectedGame(game)">{{game.name}}</span>
-                <div>
-                <span v-for="platform in game.platforms">{{platform.abbreviation}}/</span>
+                <span @click="parseSelectedGame(game)" class="gameTitle">{{game.name}}</span>
+                <div class="platformResults">
+                    <span v-for="platform in game.platforms">{{platform.abbreviation}}/</span>
                 </div>
             </div>
         </div>
@@ -80,7 +81,8 @@ watch(searchString, () => {
     position: absolute;
     background-color: var(--main-bg-color);
     max-height: 500%;
-    min-width: 150%;
+    max-width: 65vw;
+    min-width: 65vw;
     overflow-y: auto;
     border: 1px solid white;
     padding: 4px;
@@ -90,17 +92,31 @@ watch(searchString, () => {
     width: auto;
 }
 
+.gameTitle{
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
 .gameResult{
     display: flex;
     justify-content: space-between;
     cursor: pointer;
     transition: background-color 0.5s linear, color 0.5s linear;
     padding: 2px;
+    gap: 8px;
 }
 
 .gameResult:hover{
     background-color: gray;
     color: black;
     border-radius: 0.25rem;
+}
+.platformResults{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 50%;
 }
 </style>
