@@ -180,8 +180,13 @@ watch(distributableType, () => {
         <div v-if="distributableType === 'Game'" class="fieldContainer">
             <div class="form-group">
                 <label for="platform" class="form-label">Platform</label>
-                <select id="selectPlatform" name="selectPlatform" v-model="gamePlatform" aria-label="selectPlatform"
-                    class="form-input">
+                <select
+                    id="selectPlatform"
+                    name="selectPlatform"
+                    v-model="gamePlatform"
+                    aria-label="selectPlatform"
+                    class="form-input"
+                >
                     <option>Playstation</option>
                     <option>Playstation 2</option>
                     <option>Playstation 4</option>

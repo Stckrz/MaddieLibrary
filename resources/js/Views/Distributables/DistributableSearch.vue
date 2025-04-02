@@ -29,6 +29,8 @@ const searchDistributable = async () => {
 }
 const parseSelectedGame = (item: GiantBombGame) => {
     searchString.value = '';
+    if(debounceTimeout) clearTimeout(debounceTimeout);
+    searchDistributable();
     const selectedGameDistributable: Game = {
         type: 'Game',
         title: item.name,
@@ -48,7 +50,7 @@ watch(searchString, () => {
     if (debounceTimeout) clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
             searchDistributable();
-        }, 500);
+        }, 250);
 })
 
 </script>
@@ -57,7 +59,7 @@ watch(searchString, () => {
     <div class="distributableSearchWrapper form-group">
         <label for="searchInput" class="form-label">Search</label>
         <input id="searchInput" name="searchInput" class="form-input" v-model='searchString'/>
-        <div class="resultList">
+        <div v-if="searchedGames.length>0" class="resultList">
             <div v-if="distributableType === 'Game'" v-for="game in searchedGames" class="gameResult">
                 <span @click="parseSelectedGame(game)">{{game.name}}</span>
                 <div>
@@ -71,17 +73,34 @@ watch(searchString, () => {
 <style scoped>
 .distributableSearchWrapper{
     background-color: var(--main-bg-color);
+    position: relative;
 }
 
 .resultList{
     position: absolute;
     background-color: var(--main-bg-color);
-    height: 50%;
+    max-height: 500%;
+    min-width: 150%;
     overflow-y: auto;
+    border: 1px solid white;
+    padding: 4px;
+    border-radius: 0.25rem;
+    gap: 4px;
+    top: 50px;
+    width: auto;
 }
 
 .gameResult{
     display: flex;
     justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.5s linear, color 0.5s linear;
+    padding: 2px;
+}
+
+.gameResult:hover{
+    background-color: gray;
+    color: black;
+    border-radius: 0.25rem;
 }
 </style>

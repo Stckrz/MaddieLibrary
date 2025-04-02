@@ -35,6 +35,7 @@ const {closeModal, modalShown} = defineProps<{
     justify-content: center;
     align-items: center;
     background: rgba(25, 25, 25, 0.5);
+    z-index: 999;
 }
 
 .modalContent {
