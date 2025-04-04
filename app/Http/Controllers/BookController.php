@@ -45,6 +45,8 @@ class BookController extends Controller
             'author' => 'nullable|string',
             'published_date' => 'nullable|date',
             'synopsis' => 'nullable|string',
+            'img_url' => 'nullable|string',
+            'thumbnail' => 'nullable|string',
             'isbn' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);
@@ -81,6 +83,8 @@ class BookController extends Controller
             'author' => 'nullable|string',
             'published_date' => 'nullable|date',
             'synopsis' => 'nullable|string',
+            'img_url' => 'nullable|string',
+            'thumbnail' => 'nullable|string',
             'isbn' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);

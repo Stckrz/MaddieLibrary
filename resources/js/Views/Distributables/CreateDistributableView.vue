@@ -43,6 +43,7 @@ const createDistributable = async() => {
                     break;
             }
             try {
+        console.log('form', form.value)
                 const response = await fetch(`/api/${distributableInputType}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -100,9 +101,37 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 gamePlatform.value = distributable?.platform;
             }
             break;
-        case "Cd":
-            break;
         case "Book":
+            form.value = {
+                title: distributable.title,
+                synopsis: distributable.synopsis,
+                published_date: distributable.published_date,
+                img_url: distributable.img_url,
+                thumbnail: distributable.thumbnail,
+                isbn: distributable.isbn,
+                author: distributable.author,
+                checked_in: true,
+                platform: null,
+                studio: null,
+                artist: null,
+                release_date: null,
+            }
+            break;
+        case "Cd":
+            form.value = {
+                title: distributable.title,
+                synopsis: '',
+                release_date: distributable["first-release-date"],
+                img_url: distributable.img_url,
+                thumbnail: distributable.thumbnail,
+                artist: distributable.artist,
+                isbn: null,
+                author: null,
+                checked_in: true,
+                platform: null,
+                studio: null,
+                published_date: null
+            }
             break;
         case "Movie":
             break;

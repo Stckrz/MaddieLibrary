@@ -46,6 +46,8 @@ class CdController extends Controller
             'artist' => 'nullable|string',
             'release_date' => 'nullable|date',
             'synopsis' => 'nullable|string',
+            'img_url' => 'nullable|string',
+            'thumbnail' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);
         $cd = Cd::create($validated);
@@ -81,6 +83,8 @@ class CdController extends Controller
             'artist' => 'nullable|string',
             'release_date' => 'nullable|date',
             'synopsis' => 'nullable|string',
+            'img_url' => 'nullable|string',
+            'thumbnail' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);
         $cd->update($validated);

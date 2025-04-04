@@ -7,7 +7,6 @@ const createToast = () => {
     toastStore.addToast("Hello I am a toast!", "success");
 };
 
-
 </script>
 
 <template>

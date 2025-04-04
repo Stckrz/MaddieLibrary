@@ -31,6 +31,7 @@ const fetchDistributable = async (id: string) => {
     try {
         const response = await fetch(`/api/distributables/${id}`)
         const data = await response.json();
+        console.log(data)
         distributable.value = data;
     } catch (error) {
         console.error('Error Fetching Distributable: ', error);

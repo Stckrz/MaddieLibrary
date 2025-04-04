@@ -13,6 +13,8 @@ class Book extends Distributable
         'author',
         'published_date',
         'synopsis',
+        'img_url',
+        'thumbnail',
         'isbn',
         'checked_in',
     ];

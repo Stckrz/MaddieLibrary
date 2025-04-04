@@ -1,6 +1,6 @@
 export const searchGames = async (searchString: string) => {
     try{
-        const res = await fetch(`/api/search?query=${searchString}`, {
+        const res = await fetch(`/api/searchGames?query=${searchString}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

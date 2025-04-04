@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { searchGames } from '../../Lib/Api/giantbomb';
-import { Distributable, Game } from '../../models/distributables/distributable';
+import { searchBooks, searchBookCover, searchBookById } from '../../Lib/Api/openlibrary';
+import { Book, Cd, Distributable, Game } from '../../models/distributables/distributable';
 import { GiantBombGame } from '../../models/distributables/ApiModels/giantBomb';
+import { OpenLibraryBookDetail, OpenLibraryBookSearchItem } from '../../models/distributables/ApiModels/openLibraryModels';
+import { searchAlbumArt, searchAlbums } from '../../Lib/Api/musicBrainz';
+import { MusicBrainzSearchItem } from '../../models/distributables/ApiModels/musicBrainzModels';
 
 defineOptions({
     name: 'DistributableSearch',
@@ -14,10 +18,16 @@ const props = defineProps<{
 }>();
 
 const searchedGames = ref<GiantBombGame[]>([]);
+const searchedBooks = ref<OpenLibraryBookSearchItem[]>([]);
+const searchedAlbums = ref<MusicBrainzSearchItem[]>([]);
+
 const searchString = ref('');
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const searchDistributable = async () => {
+    searchedGames.value = [];
+    searchedBooks.value = [];
+    searchedAlbums.value = [];
     switch(props.distributableType){
         case "Game":
             const games = await searchGames(searchString.value);
@@ -25,7 +35,39 @@ const searchDistributable = async () => {
                 searchedGames.value = games;
             }
             break;
+        case "Book":
+            const books = await searchBooks(searchString.value);
+            if(books){
+                searchedBooks.value = books;
+                console.log(searchedBooks.value)
+            }
+            break;
+        case "Cd":
+            const albums = await searchAlbums(searchString.value);
+            if(albums){
+                searchedAlbums.value = albums;
+                console.log("shittybutt", searchedAlbums.value)
+            }
+            break;
     }
+}
+
+const parseSelectedCd = async (item: MusicBrainzSearchItem) => {
+    // searchString.value = '';
+    if(debounceTimeout) clearTimeout(debounceTimeout);
+    searchedAlbums.value=[];
+    const albumArt = await searchAlbumArt(item.releases[0].id);
+    const selectedCdDistributable: Cd = {
+        type: 'Cd',
+        title: item.title,
+        synopsis: '',
+        artist: item["artist-credit"][0].name ?? '',
+        release_date: item['first-release-date'],
+        checked_in: true,
+        img_url: albumArt,
+        thumbnail: `http://coverartarchive.org/release/${item.id}-250.jpg`,
+    }
+    props.selectItem(selectedCdDistributable);
 }
 
 const parseSelectedGame = (item: GiantBombGame) => {
@@ -43,6 +85,39 @@ const parseSelectedGame = (item: GiantBombGame) => {
         thumbnail: item.image.thumb_url,
     }
     props.selectItem(selectedGameDistributable);
+}
+
+const parseSelectedBook = async (item: OpenLibraryBookSearchItem) => {
+    let img_url = '';
+    let bookDetail: OpenLibraryBookDetail | null = null;
+    try{
+        bookDetail = await searchBookById(item.key);
+    } catch {
+        console.log('oh nooo');
+    }
+    try{
+        img_url = await searchBookCover(item.cover_edition_key);
+    }catch {
+        console.log('shittyassbutt')
+    }
+    if(bookDetail){
+        searchString.value = '';
+        if(debounceTimeout) clearTimeout(debounceTimeout);
+        searchDistributable();
+        const selectedBookDistributable: Book = {
+            type: 'Book',
+            title: bookDetail.title,
+            author: item.author_name[0],
+            synopsis: bookDetail.description.value ? bookDetail.description.value : bookDetail.description,
+            isbn: bookDetail.isbn ?? '',
+            published_date: bookDetail.publish_date,
+            checked_in: true,
+            img_url: img_url,
+            thumbnail: img_url ?? ''
+        }
+        console.log(selectedBookDistributable)
+        props.selectItem(selectedBookDistributable);
+    }
 
 }
 
@@ -65,6 +140,22 @@ watch(searchString, () => {
                 <span @click="parseSelectedGame(game)" class="gameTitle">{{game.name}}</span>
                 <div class="platformResults">
                     <span v-for="platform in game.platforms">{{platform.abbreviation}}/</span>
+                </div>
+            </div>
+        </div>
+        <div v-if="searchedBooks.length > 0" class="resultList">
+            <div v-if="distributableType === 'Book'" v-for="book in searchedBooks" class="gameResult">
+                <span @click="parseSelectedBook(book)" class="gameTitle">{{book.title}}</span>
+                <div class="platformResults">
+                    <span v-if="book.author_name[0]">{{book.author_name[0]}}</span>
+                </div>
+            </div>
+        </div>
+        <div v-if="searchedAlbums.length > 0" class="resultList">
+            <div v-if="distributableType === 'Cd'" v-for="album in searchedAlbums" class="gameResult">
+                <span @click="parseSelectedCd(album)" class="gameTitle">{{album.title}}</span>
+                <div class="platformResults">
+                    <span v-if="album?.artistCredit?.length > 0">{{album.artistCredit[0].name}}</span>
                 </div>
             </div>
         </div>
