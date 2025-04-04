@@ -13,6 +13,9 @@ class MovieController extends Controller
     public function index(Request $request)
     {
 
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+
         $query = Movie::query();
 
         if ($request->has('sort_by')) {
@@ -27,7 +30,7 @@ class MovieController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
 
-        $cds = $query->get();
+        $cds = $query->skip($offset)->take($limit)->get();
         return response()->json($cds);
     }
 

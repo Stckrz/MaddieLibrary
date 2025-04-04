@@ -12,6 +12,9 @@ class GameController extends Controller
      */
     public function index(Request $request)
     {
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+
         $query = Game::query();
 
         if ($request->has('sort_by')) {
@@ -24,7 +27,8 @@ class GameController extends Controller
             }
             $query->orderBy($sortField, $sortDirection);
         }
-        $games = $query->get();
+
+        $games = $query->skip($offset)->take($limit)->get();
         return response()->json($games);
     }
 

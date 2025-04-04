@@ -13,6 +13,8 @@ class CdController extends Controller
     public function index(Request $request)
     {
 
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
         $query = Cd::query();
 
         if ($request->has('sort_by')) {
@@ -27,7 +29,7 @@ class CdController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
 
-        $cds = $query->get();
+        $cds = $query->skip($offset)->take($limit)->get();
         return response()->json($cds);
     }
 

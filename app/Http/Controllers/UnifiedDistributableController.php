@@ -10,6 +10,8 @@ class UnifiedDistributableController extends Controller
     //Display a list of distributables
     public function index(Request $request)
     {
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
 
         //query parameters for displaying all of a certain type
         $query = UnifiedDistributable::query();
@@ -41,7 +43,8 @@ class UnifiedDistributableController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
 
-        $distributables = $query->get();
+        $distributables = $query->skip($offset)->take($limit)->get();
+
         return response()->json($distributables);
     }
 

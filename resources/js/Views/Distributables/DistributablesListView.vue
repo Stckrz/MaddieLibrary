@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Modal from '../../Components/Modal/Modal.vue';
 import CreateDistributableView from '../Distributables/CreateDistributableView.vue';
+import Pagination from '../../Components/Pagination/Pagination.vue';
 import { FaSort } from 'vue3-icons/fa';
 import { ref, watch, onMounted } from 'vue';
 import { Distributable } from '../../models/distributables/distributable';
@@ -13,14 +14,21 @@ const distributables = ref<Distributable[]>([]);
 const newBookModalShown = ref(false)
 const sortAsc = ref('asc')
 const sortCategory = ref("distributables")
+const sortBy = ref("")
+const currentPage = ref<number>(1);
 
 onMounted(() => {
     fetchDistributables();
 })
 
 const fetchDistributables = async () => {
+    const offset = (currentPage.value - 1) * 10;
+    let url = `/api/${sortCategory.value}?offset=${offset}`;
+    if(sortBy.value){
+        url += `&sort_by=${sortBy.value}&sort_order=${sortAsc.value}`;
+    }
     try {
-        const response = await fetch(`/api/${sortCategory.value}`);
+        const response = await fetch(url);
         distributables.value = await response.json();
     } catch (error) {
         console.error('Error Fetching Distributables: ', error);
@@ -31,17 +39,25 @@ const toggleNewBookModal = () => {
     newBookModalShown.value = !newBookModalShown.value
 }
 
-const sortDistributables = async (sortBy: string) => {
-    try {
-        const response = await fetch(`/api/${sortCategory.value}?sort_by=${sortBy}&sort_order=${sortAsc.value}`);
-        distributables.value = await response.json();
+//handles the change for values which affect sorting
+const sortDistributables = async (newSortBy: string) => {
+      if (sortBy.value === newSortBy) {
+        // Toggle sort order if the same column is clicked
         sortAsc.value = sortAsc.value === 'asc' ? 'desc' : 'asc';
-    } catch (error) {
-        console.error('Error Fetching Distributables: ', error);
-    }
+      } else {
+        // Set a new sort column and reset to ascending
+        sortBy.value = newSortBy;
+        sortAsc.value = 'asc';
+      }
+      currentPage.value = 1; // Optionally reset page if sorting changes
+      fetchDistributables();
 };
 
-watch(sortCategory, () => {
+const updateCurrentPage = (page: number) => {
+    currentPage.value = page;
+}
+
+watch([sortCategory, currentPage], () => {
     fetchDistributables();
 });
 </script>
@@ -128,12 +144,20 @@ watch(sortCategory, () => {
                             ) && distributable.release_date">
                             {{ new Date(distributable.release_date).toLocaleDateString() }}
                         </td>
+                        <td v-if="(
+                            distributable.type === 'Cd'
+                                || distributable.type === 'Game'
+                                || distributable.type === 'Movie'
+                            ) && !distributable.release_date">
+                            No date found
+                        </td>
                         <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
                             {{distributable.checked_in ? 'Yes' : 'No'}}
                         </td>
                     </tr>
                 </tbody>
             </table>
+        <Pagination :callback="updateCurrentPage" :pageNumber="currentPage"/>
         </div>
         <div>
             <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">

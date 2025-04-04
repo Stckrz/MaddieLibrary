@@ -12,6 +12,10 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
+
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+
         $query = Book::query();
 
         if ($request->has('sort_by')) {
@@ -26,7 +30,7 @@ class BookController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
 
-        $books = $query->get();
+        $books = $query->skip($offset)->take($limit)->get();
         return response()->json($books);
     }
 

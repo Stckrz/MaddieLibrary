@@ -85,7 +85,8 @@ const addToCart = () => {
 <template>
     <div class="distributableWrapper">
         <div class="contentContainer">
-            <div class="imageContainer"><img :src="distributable?.img_url" /></div>
+            <div v-if="distributable?.img_url" class="imageContainer"><img :src="distributable?.img_url" /></div>
+            <div v-else class="imageContainer">No image</div>
             <div class="informationWrapper">
                 Id:
                 {{ id }}
@@ -167,6 +168,10 @@ const addToCart = () => {
 }
 .imageContainer{
     width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
 }
 .informationWrapper{
     width: 80%;
