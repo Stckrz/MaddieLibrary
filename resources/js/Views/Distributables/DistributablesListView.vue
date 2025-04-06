@@ -11,11 +11,13 @@ defineOptions({
 })
 
 const distributables = ref<Distributable[]>([]);
-const newBookModalShown = ref(false)
-const sortAsc = ref('asc')
-const sortCategory = ref("distributables")
-const sortBy = ref("")
+const newBookModalShown = ref(false);
+const sortAsc = ref('asc');
+const sortCategory = ref("distributables");
+const sortBy = ref("");
+
 const currentPage = ref<number>(1);
+const isNextPage = ref<boolean>(true);
 
 onMounted(() => {
     fetchDistributables();
@@ -42,14 +44,14 @@ const toggleNewBookModal = () => {
 //handles the change for values which affect sorting
 const sortDistributables = async (newSortBy: string) => {
       if (sortBy.value === newSortBy) {
-        // Toggle sort order if the same column is clicked
+        //toggle sort order if the same column is clicked
         sortAsc.value = sortAsc.value === 'asc' ? 'desc' : 'asc';
       } else {
-        // Set a new sort column and reset to ascending
+        //set a new sort column and reset to ascending
         sortBy.value = newSortBy;
         sortAsc.value = 'asc';
       }
-      currentPage.value = 1; // Optionally reset page if sorting changes
+      currentPage.value = 1;
       fetchDistributables();
 };
 
@@ -57,8 +59,14 @@ const updateCurrentPage = (page: number) => {
     currentPage.value = page;
 }
 
+watch([sortCategory], () => {
+    currentPage.value = 1;
+});
 watch([sortCategory, currentPage], () => {
     fetchDistributables();
+});
+watch(distributables, () => {
+    distributables.value.length < 10 ? isNextPage.value = false : isNextPage.value = true;
 });
 </script>
 
@@ -87,77 +95,81 @@ watch([sortCategory, currentPage], () => {
                     <input id="Movies" type="radio" name="sort_category" value="movies" v-model="sortCategory" />
                     Movies
                 </label>
+                <label for="Shows" class="sortItem">
+                    <input id="Shows" type="radio" name="sort_category" value="shows" v-model="sortCategory" />
+                    Shows
+                </label>
             </div>
             <button v-on:click="toggleNewBookModal">New</button>
         </div>
         <div class="tableSectionWrapper">
-            <div class="bookListHeaderContainer">
-                <h1>Distributables</h1>
-            </div>
-            <table class="bookTable">
-                <thead>
-                    <tr>
-                        <th v-on:click="sortDistributables('type')">
-                            <div class="tableHeaderContainer">
-                                <div class="h-full flex items-center justify-center">Type</div>
-                                <FaSort class="self-start" size="1em" />
-                            </div>
-                        </th>
-                        <th v-on:click="sortDistributables('title')">
+            <div class="tableBox">
+                <div class="bookListHeaderContainer">
+                    <h1>Distributables</h1>
+                </div>
+                <table class="bookTable">
+                    <thead>
+                        <tr>
+                            <th v-on:click="sortDistributables('type')">
+                                <div class="tableHeaderContainer">
+                                    <div class="h-full flex items-center justify-center">Type</div>
+                                    <FaSort class="self-start" size="1em" />
+                                </div>
+                            </th>
+                            <th v-on:click="sortDistributables('title')">
 
-                            <div class="tableHeaderContainer">
-                                <div class="h-full flex items-center justify-center">Title</div>
-                                <FaSort class="self-start" size="1em" />
-                            </div>
-                        </th>
-                        <th>Published</th>
-                        <th>Available</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="distributable in distributables"
-                        :key="distributable.id"
-                        class="tableListItem"
-                        :to="{
-                            name: 'distributable-detail',
-                            params: { id: distributable.id }
-                        }"
-                        @click="$router.push({
-                            name: 'distributable-detail',
-                            params: { id: distributable.id }
-                        })"
-                    >
-                        <td>
-                            {{ distributable.type }}
-                        </td>
-                        <td>
-                            {{ distributable.title }}
-                        </td>
-                        <td v-if="distributable.type === 'Book' && distributable.published_date">
-                            {{ new Date(distributable.published_date).toLocaleDateString() }}
-                        </td>
-                        <td v-if="(
-                            distributable.type === 'Cd'
-                                || distributable.type === 'Game'
-                                || distributable.type === 'Movie'
-                            ) && distributable.release_date">
-                            {{ new Date(distributable.release_date).toLocaleDateString() }}
-                        </td>
-                        <td v-if="(
-                            distributable.type === 'Cd'
-                                || distributable.type === 'Game'
-                                || distributable.type === 'Movie'
-                            ) && !distributable.release_date">
-                            No date found
-                        </td>
-                        <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
-                            {{distributable.checked_in ? 'Yes' : 'No'}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        <Pagination :callback="updateCurrentPage" :pageNumber="currentPage"/>
+                                <div class="tableHeaderContainer">
+                                    <div class="h-full flex items-center justify-center">Title</div>
+                                    <FaSort class="self-start" size="1em" />
+                                </div>
+                            </th>
+                            <th>Published</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="distributable in distributables"
+                            :key="distributable.id"
+                            class="tableListItem"
+                            :to="{
+                                name: 'distributable-detail',
+                                params: { id: distributable.id }
+                            }"
+                            @click="$router.push({
+                                name: 'distributable-detail',
+                                params: { id: distributable.id }
+                            })"
+                        >
+                            <td>
+                                {{ distributable.type }}
+                            </td>
+                            <td>
+                                {{ distributable.title }}
+                            </td>
+                            <td v-if="distributable.type === 'Book' && distributable.published_date">
+                                {{ new Date(distributable.published_date).toLocaleDateString() }}
+                            </td>
+                            <td v-if="(
+                                distributable.type !== 'Book'
+                                ) && distributable.release_date">
+                                {{ new Date(distributable.release_date).toLocaleDateString() }}
+                            </td>
+                            <td v-if="(
+                                distributable.type !== 'Book'
+                                ) && !distributable.release_date">
+                                No date found
+                            </td>
+                            <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
+                                {{distributable.checked_in ? 'Yes' : 'No'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <div class="paginationWrapper">
+            <Pagination :callback="updateCurrentPage" :pageNumber="currentPage" :isNextPage="isNextPage"/>
+        </div>
         </div>
         <div>
             <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">
@@ -177,8 +189,19 @@ thead, th{
 table{
     border-collapse: collapse;
 }
+.tableListItem{
+    height: 5px;
+    flex-grow: 0;
+}
+
+.tableBox{
+    height: 75%;
+}
 
 .tableSectionWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
     position: relative;
@@ -193,7 +216,7 @@ table{
     width: 20%;
     padding: 4px;
     background-color: var(--main-bg-color);
-z-index: 9;
+    z-index: 9;
 }
 
 .bookTable {
@@ -218,7 +241,6 @@ z-index: 9;
     justify-content: center;
 }
 
-
 .sort-wrapper {
     display: flex;
     flex-direction: column;
@@ -227,6 +249,10 @@ z-index: 9;
 
 .sortItem {
     cursor: pointer;
+}
+
+.paginationWrapper{
+    justify-self: flex-start;
 }
 
 @media only screen and (max-width: 600px) {

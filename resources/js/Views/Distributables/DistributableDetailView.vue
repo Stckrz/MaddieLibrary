@@ -17,21 +17,20 @@ defineOptions({
     name: 'DistributableDetailView'
 })
 
-const props = defineProps<{ id: string }>();
+const {id} = defineProps<{ id: string }>();
 const router = useRouter();
 const distributable = ref<Distributable | null>(null);
 const isEditing = ref(false);
 const dialogueShown = ref(false);
 
 onMounted(() => {
-    fetchDistributable(props.id);
+    fetchDistributable(id);
 })
 
 const fetchDistributable = async (id: string) => {
     try {
         const response = await fetch(`/api/distributables/${id}`)
         const data = await response.json();
-        console.log(data)
         distributable.value = data;
     } catch (error) {
         console.error('Error Fetching Distributable: ', error);
@@ -53,9 +52,12 @@ const deleteDistributable = async () => {
         case "Movie":
             distributableInputType = 'movies';
             break;
+        case "Show":
+            distributableInputType = 'shows';
+            break;
     }
     try {
-        const response = await fetch(`/api/${distributableInputType}/${props.id}`, {
+        const response = await fetch(`/api/${distributableInputType}/${id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         })
@@ -134,6 +136,18 @@ const addToCart = () => {
                         {{ distributable.isbn }}
                     </div>
                 </div>
+                <div v-if="distributable?.type === 'Show'">
+                    <div>
+                        Release Date:
+                        {{ distributable.release_date }}
+                    </div>
+                </div>
+                <div v-if="distributable?.type === 'Movie'">
+                    <div>
+                        Release Date:
+                        {{ distributable.release_date }}
+                    </div>
+                </div>
                 <div>
                     Synopsis:
                     {{ distributable?.synopsis }}
@@ -183,5 +197,21 @@ const addToCart = () => {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+}
+@media only screen and (max-width: 600px) {
+    .contentContainer{
+        flex-direction: column;
+        gap: 20px;
+    }
+    .distributableWrapper{
+        height: 100%;
+    }
+    .imageContainer{
+        align-self: center;
+        width: 70%;
+    }
+    .informationWrapper{
+        width: 100%;
+    }
 }
 </style>

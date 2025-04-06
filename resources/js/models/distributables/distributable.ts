@@ -1,5 +1,5 @@
 export interface BaseDistributable {
-    type: 'Book' | 'Cd' | 'Game' | 'Movie',
+    type: 'Book' | 'Cd' | 'Game' | 'Movie' | 'Show',
     id?: number,
     title: string,
     synopsis: string | null,
@@ -30,10 +30,14 @@ export interface Game extends BaseDistributable {
 export interface Movie extends BaseDistributable {
     type: 'Movie',
     release_date: string | null,
-    platform: string | null,
 };
 
-export type Distributable = Book | Cd | Game | Movie;
+export interface Show extends BaseDistributable {
+    type: 'Show',
+    release_date: string | null,
+};
+
+export type Distributable = Book | Cd | Game | Movie | Show;
 
 export interface FormFields {
     title: string | null,

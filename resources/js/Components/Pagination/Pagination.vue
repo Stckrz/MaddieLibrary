@@ -3,9 +3,10 @@
 defineOptions({
     name: "Pagination",
 })
-const {callback, pageNumber} = defineProps<{
+const {callback, pageNumber, isNextPage} = defineProps<{
     callback: (page: number) => void,
-    pageNumber: number
+    pageNumber: number,
+    isNextPage: boolean,
 }>()
 
 const pageIncrement = () => {
@@ -19,23 +20,25 @@ const pageDecrement = () => {
 
 <template>
     <div class="paginationWrapper">
-        <div @click="pageDecrement">
-            Previous
-        </div>
-        <div @click="pageIncrement">
-            Next
-        </div>
+        <button @click="pageDecrement">
+            Prev
+        </button>
         <div>{{pageNumber}}</div>
+        <button
+            :disabled="isNextPage ? false : true"
+            @click="pageIncrement"
+        >
+            Next
+        </button>
     </div>
 </template>
 
 <style scoped>
 .paginationWrapper{
     display: flex;
+    align-items: center;
     gap: 4px;
     width: 100%;
-    border: 1px solid blue;
     justify-content: flex-end;
 }
-
 </style>

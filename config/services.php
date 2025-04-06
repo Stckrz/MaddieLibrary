@@ -37,6 +37,14 @@ return [
 
     'giantBomb' => [
         'key' => env('GIANTBOMB_API_KEY'),
+    ],
+    'tmdb' => [
+        'key' => env('TMDB_API_KEY'),
+    ],
+    'spotify_oauth' => [
+        'client_id' => env('SPOTIFY_CLIENT_ID'),
+        'client_secret' => env('SPOTIFY_CLIENT_SECRET'),
+        'token_url' => env('SPOTIFY_TOKEN_URL'),
     ]
 
 ];

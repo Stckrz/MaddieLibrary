@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movie;
+use App\Models\Show;
 use Illuminate\Http\Request;
 
-class MovieController extends Controller
+class ShowController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class MovieController extends Controller
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 10);
 
-        $query = Movie::query();
+        $query = Show::query();
 
         if ($request->has('sort_by')) {
             $sortField = $request->input('sort_by');
@@ -30,8 +30,8 @@ class MovieController extends Controller
             $query->orderBy($sortField, $sortDirection);
         }
 
-        $movies = $query->skip($offset)->take($limit)->get();
-        return response()->json($movies);
+        $shows = $query->skip($offset)->take($limit)->get();
+        return response()->json($shows);
     }
 
     /**
@@ -52,19 +52,19 @@ class MovieController extends Controller
             'thumbnail' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);
-        $movie = Movie::create($validated);
+        $show = Show::create($validated);
         return response()->json([
-            'message' => 'Movie Created Successfully',
-            'data' => $movie
+            'message' => 'Show Created Successfully',
+            'data' => $show
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Movie $movie)
+    public function show(Show $show)
     {
-        return response()->json($movie);
+        return response()->json($show);
     }
 
     /**
@@ -78,7 +78,7 @@ class MovieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movie $movie)
+    public function update(Request $request, Show $show)
     {
         $validated = $request->validate([
             'title' => 'sometimes|required',
@@ -89,21 +89,22 @@ class MovieController extends Controller
             'thumbnail' => 'nullable|string',
             'checked_in' => 'required|boolean',
         ]);
-        $movie->update($validated);
+        $show->update($validated);
         return response()->json([
-            'message' => 'Movie Edited Successfully',
-            'data' => $movie
+            'message' => 'Show Edited Successfully',
+            'data' => $show
         ], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Movie $movie)
+    public function destroy(Show $show)
     {
-        $movie->delete();
+        $show->delete();
         return response()->json([
-            'message' => "Movie Deleted Successfully",
+            'message' => "Show Deleted Successfully",
         ]);
     }
+    //
 }

@@ -41,9 +41,11 @@ const createDistributable = async() => {
                 case "Movie":
                     distributableInputType = 'movies';
                     break;
+                case "Show":
+                    distributableInputType = 'shows';
+                    break;
             }
             try {
-        console.log('form', form.value)
                 const response = await fetch(`/api/${distributableInputType}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -121,7 +123,7 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
             form.value = {
                 title: distributable.title,
                 synopsis: '',
-                release_date: distributable["first-release-date"],
+                release_date: distributable.release_date,
                 img_url: distributable.img_url,
                 thumbnail: distributable.thumbnail,
                 artist: distributable.artist,
@@ -134,6 +136,36 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
             }
             break;
         case "Movie":
+            form.value = {
+                title: distributable.title,
+                synopsis: distributable.synopsis,
+                release_date: distributable.release_date,
+                img_url: distributable.img_url,
+                thumbnail: distributable.thumbnail,
+                artist: null,
+                isbn: null,
+                author: null,
+                checked_in: true,
+                platform: null,
+                studio: null,
+                published_date: null
+            }
+            break;
+        case "Show":
+            form.value = {
+                title: distributable.title,
+                synopsis: distributable.synopsis,
+                release_date: distributable.release_date,
+                img_url: distributable.img_url,
+                thumbnail: distributable.thumbnail,
+                artist: null,
+                isbn: null,
+                author: null,
+                checked_in: true,
+                platform: null,
+                studio: null,
+                published_date: null
+            }
             break;
     }
 }
@@ -166,6 +198,7 @@ watch(distributableType, () => {
             <option>Game</option>
             <option>Cd</option>
             <option>Movie</option>
+            <option>Show</option>
         </select>
     </div>
     <form class="newDistributableForm" @submit.prevent="createDistributable">
@@ -234,16 +267,17 @@ watch(distributableType, () => {
         </div>
         <div v-if="distributableType === 'Movie'" class="fieldContainer">
             <div class="form-group">
-                <label for="platform" class="form-label">Platform</label>
-                <input id="platform" name="platform" v-model="form.platform" type="text" aria-required="true"
-                    class="form-input" required />
+                <label for="release_date" class="form-label">Release Date</label>
+                <input id="release_date" name="release_date" v-model="form.release_date" type="date"
+                    aria-required="true" class="form-input" />
             </div>
+        </div>
+        <div v-if="distributableType === 'Show'" class="fieldContainer">
             <div class="form-group">
                 <label for="release_date" class="form-label">Release Date</label>
                 <input id="release_date" name="release_date" v-model="form.release_date" type="date"
                     aria-required="true" class="form-input" />
             </div>
-
         </div>
             <div class="form-group">
                 <label for="img_url" class="form-label">img_url

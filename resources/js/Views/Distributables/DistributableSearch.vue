@@ -1,25 +1,28 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { searchGames } from '../../Lib/Api/giantbomb';
-import { searchBooks, searchBookCover, searchBookById } from '../../Lib/Api/openlibrary';
-import { Book, Cd, Distributable, Game } from '../../models/distributables/distributable';
+import { searchBooks } from '../../Lib/Api/googleBooks';
+import { Book, Cd, Distributable, Game, Movie, Show } from '../../models/distributables/distributable';
 import { GiantBombGame } from '../../models/distributables/ApiModels/giantBomb';
-import { OpenLibraryBookDetail, OpenLibraryBookSearchItem } from '../../models/distributables/ApiModels/openLibraryModels';
-import { searchAlbumArt, searchAlbums } from '../../Lib/Api/musicBrainz';
-import { MusicBrainzSearchItem } from '../../models/distributables/ApiModels/musicBrainzModels';
+import { searchAlbums } from '../../Lib/Api/spotifyApi';
+import { searchMovies, searchShows } from '../../Lib/Api/tmdb';
+import { GoogleBookItem } from '../../models/distributables/ApiModels/googleBooksModels';
+import { SpotifyAlbumItem } from '../../models/distributables/ApiModels/spotifyModels';
 
 defineOptions({
     name: 'DistributableSearch',
 })
-const props = defineProps<{
+const {distributableType, selectItem} = defineProps<{
     distributableType: string;
     selectItem: (distributable: Distributable) => void;
 
 }>();
 
 const searchedGames = ref<GiantBombGame[]>([]);
-const searchedBooks = ref<OpenLibraryBookSearchItem[]>([]);
-const searchedAlbums = ref<MusicBrainzSearchItem[]>([]);
+const searchedBooks = ref<GoogleBookItem[]>([]);
+const searchedAlbums = ref<SpotifyAlbumItem[]>([]);
+const searchedMovies = ref<TmdbMovie[]>([]);
+const searchedShows = ref<TmdbShow[]>([]);
 
 const searchString = ref('');
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -28,7 +31,12 @@ const searchDistributable = async () => {
     searchedGames.value = [];
     searchedBooks.value = [];
     searchedAlbums.value = [];
-    switch(props.distributableType){
+    searchedMovies.value = [];
+    searchedShows.value = [];
+    if(searchString.value === ""){
+        return;
+    }
+    switch(distributableType){
         case "Game":
             const games = await searchGames(searchString.value);
             if(games){
@@ -39,35 +47,43 @@ const searchDistributable = async () => {
             const books = await searchBooks(searchString.value);
             if(books){
                 searchedBooks.value = books;
-                console.log(searchedBooks.value)
             }
             break;
         case "Cd":
             const albums = await searchAlbums(searchString.value);
             if(albums){
                 searchedAlbums.value = albums;
-                console.log("shittybutt", searchedAlbums.value)
+            }
+            break;
+        case "Movie":
+            const movies = await searchMovies(searchString.value);
+            if(movies){
+                searchedMovies.value = movies;
+            }
+            break;
+        case "Show":
+            const shows = await searchShows(searchString.value);
+            if(shows){
+                searchedShows.value = shows;
             }
             break;
     }
 }
 
-const parseSelectedCd = async (item: MusicBrainzSearchItem) => {
-    // searchString.value = '';
+const parseSelectedCd = async (item: SpotifyAlbumItem) => {
     if(debounceTimeout) clearTimeout(debounceTimeout);
     searchedAlbums.value=[];
-    const albumArt = await searchAlbumArt(item.releases[0].id);
     const selectedCdDistributable: Cd = {
         type: 'Cd',
-        title: item.title,
+        title: item.name,
         synopsis: '',
-        artist: item["artist-credit"][0].name ?? '',
-        release_date: item['first-release-date'],
+        artist: item.artists[0].name,
+        release_date: item.release_date,
         checked_in: true,
-        img_url: albumArt,
-        thumbnail: `http://coverartarchive.org/release/${item.id}-250.jpg`,
+        img_url: item.images[0]?.url,
+        thumbnail: item.images[0]?.url
     }
-    props.selectItem(selectedCdDistributable);
+    selectItem(selectedCdDistributable);
 }
 
 const parseSelectedGame = (item: GiantBombGame) => {
@@ -84,41 +100,59 @@ const parseSelectedGame = (item: GiantBombGame) => {
         img_url: item.image.original_url,
         thumbnail: item.image.thumb_url,
     }
-    props.selectItem(selectedGameDistributable);
+    selectItem(selectedGameDistributable);
 }
 
-const parseSelectedBook = async (item: OpenLibraryBookSearchItem) => {
-    let img_url = '';
-    let bookDetail: OpenLibraryBookDetail | null = null;
-    try{
-        bookDetail = await searchBookById(item.key);
-    } catch {
-        console.log('oh nooo');
+const parseSelectedMovie = (item: TmdbMovie) => {
+    searchString.value = '';
+    if(debounceTimeout) clearTimeout(debounceTimeout);
+    searchDistributable();
+    const selectedGameDistributable: Movie = {
+        type: 'Movie',
+        title: item.title,
+        synopsis: item.overview,
+        release_date: item.release_date,
+        checked_in: true,
+        img_url: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+        thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`
     }
-    try{
-        img_url = await searchBookCover(item.cover_edition_key);
-    }catch {
-        console.log('shittyassbutt')
-    }
-    if(bookDetail){
-        searchString.value = '';
-        if(debounceTimeout) clearTimeout(debounceTimeout);
-        searchDistributable();
-        const selectedBookDistributable: Book = {
-            type: 'Book',
-            title: bookDetail.title,
-            author: item.author_name[0],
-            synopsis: bookDetail.description.value ? bookDetail.description.value : bookDetail.description,
-            isbn: bookDetail.isbn ?? '',
-            published_date: bookDetail.publish_date,
-            checked_in: true,
-            img_url: img_url,
-            thumbnail: img_url ?? ''
-        }
-        console.log(selectedBookDistributable)
-        props.selectItem(selectedBookDistributable);
-    }
+    selectItem(selectedGameDistributable);
+}
 
+const parseSelectedShow = (item: TmdbShow) => {
+    searchString.value = '';
+    if(debounceTimeout) clearTimeout(debounceTimeout);
+    searchDistributable();
+    const selectedGameDistributable: Show = {
+        type: 'Show',
+        title: item.name,
+        synopsis: item.overview,
+        release_date: item.first_air_date,
+        checked_in: true,
+        img_url: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+        thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`
+    }
+    selectItem(selectedGameDistributable);
+}
+
+const parseSelectedBook = (item: GoogleBookItem) => {
+    searchString.value = '';
+    if(debounceTimeout) clearTimeout(debounceTimeout);
+    searchDistributable();
+    //We are checking here if the isbn10 is in the data retrieved. If not, we'll leave it blank for the user to fill out.
+    const isbn = item.volumeInfo.industryIdentifiers.find(item => item.type === 'ISBN_10')
+    const selectedGameDistributable: Book = {
+        type: 'Book',
+        title: item.volumeInfo.title,
+        author: item.volumeInfo.authors[0],
+        synopsis: item.volumeInfo.description,
+        isbn: isbn?.identifier ?? null,
+        published_date: item.volumeInfo.publishedDate,
+        checked_in: true,
+        img_url: item.volumeInfo.imageLinks.thumbnail,
+        thumbnail: item.volumeInfo.imageLinks.smallThumbnail,
+    }
+    selectItem(selectedGameDistributable);
 }
 
 watch(searchString, () => {
@@ -128,6 +162,10 @@ watch(searchString, () => {
             searchDistributable();
         }, 250);
 })
+
+watch(() => distributableType, () => {
+    searchString.value = ''
+});
 
 </script>
 
@@ -145,18 +183,28 @@ watch(searchString, () => {
         </div>
         <div v-if="searchedBooks.length > 0" class="resultList">
             <div v-if="distributableType === 'Book'" v-for="book in searchedBooks" class="gameResult">
-                <span @click="parseSelectedBook(book)" class="gameTitle">{{book.title}}</span>
+                <span @click="parseSelectedBook(book)" class="gameTitle">{{book.volumeInfo.title}}</span>
                 <div class="platformResults">
-                    <span v-if="book.author_name[0]">{{book.author_name[0]}}</span>
+                    <span v-if="book.volumeInfo?.authors">{{book.volumeInfo?.authors[0]}}</span>
                 </div>
             </div>
         </div>
         <div v-if="searchedAlbums.length > 0" class="resultList">
             <div v-if="distributableType === 'Cd'" v-for="album in searchedAlbums" class="gameResult">
-                <span @click="parseSelectedCd(album)" class="gameTitle">{{album.title}}</span>
+                <span @click="parseSelectedCd(album)" class="gameTitle">{{album.name}}</span>
                 <div class="platformResults">
-                    <span v-if="album?.artistCredit?.length > 0">{{album.artistCredit[0].name}}</span>
+                    <span v-if="album.artists[0]">{{album.artists[0].name}}</span>
                 </div>
+            </div>
+        </div>
+        <div v-if="searchedMovies.length > 0" class="resultList">
+            <div v-if="distributableType === 'Movie'" v-for="movie in searchedMovies" class="gameResult">
+                <span @click="parseSelectedMovie(movie)" class="gameTitle">{{movie.title}}</span>
+            </div>
+        </div>
+        <div v-if="searchedShows.length > 0" class="resultList">
+            <div v-if="distributableType === 'Show'" v-for="show in searchedShows" class="gameResult">
+                <span @click="parseSelectedShow(show)" class="gameTitle">{{show.name}}</span>
             </div>
         </div>
     </div>
