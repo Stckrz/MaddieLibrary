@@ -90,8 +90,6 @@ const addToCart = () => {
             <div v-if="distributable?.img_url" class="imageContainer"><img :src="distributable?.img_url" /></div>
             <div v-else class="imageContainer">No image</div>
             <div class="informationWrapper">
-                Id:
-                {{ id }}
                 <div>
                     Title:
                     {{ distributable?.title }}
@@ -179,6 +177,7 @@ const addToCart = () => {
 .contentContainer{
     display: flex;
     padding: 4px;
+    gap: 20px;
 }
 .imageContainer{
     width: 20%;
@@ -190,6 +189,7 @@ const addToCart = () => {
 .informationWrapper{
     width: 80%;
     display: flex;
+    gap: 6px;
     flex-direction: column;
     padding: 4px;
 }

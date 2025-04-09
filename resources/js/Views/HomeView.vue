@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { useToastStore } from '../Stores/toastStore';
+import {useMediaQuery} from '../Composables/useMediaQuery'
 
+const isMobile = useMediaQuery('(max-width: 600px)');
 const toastStore = useToastStore();
 
 const createToast = () => {
+    console.log(isMobile.value);
     toastStore.addToast("Hello I am a toast!", "success");
 };
 

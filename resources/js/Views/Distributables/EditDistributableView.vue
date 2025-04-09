@@ -38,7 +38,7 @@ const populateForm = () => {
         author: props.distributable.type === "Book" ? props.distributable.author : null,
         published_date: props.distributable.type === "Book" ? props.distributable.published_date : null,
         isbn: props.distributable.type === "Book" ? props.distributable.isbn : null,
-        platform: (props.distributable.type === "Game" || props.distributable.type === "Movie") ? props.distributable.platform : null,
+        platform: (props.distributable.type === "Game") ? props.distributable.platform : null,
         studio: null,
         img_url: props.distributable.img_url,
         thumbnail: props.distributable.thumbnail,
@@ -61,6 +61,9 @@ const editDistributable = async () => {
             break;
         case "Movie":
             distributableInputType = 'movies';
+            break;
+        case "Show":
+            distributableInputType = 'shows';
             break;
     }
 
@@ -145,10 +148,12 @@ watch(() => props.distributable, (newVal) => {
         </div>
         <div v-if="distributableType === 'Movie'" class="fieldContainer">
             <div class="form-group">
-                <label for="platform" class="form-label">Platform</label>
-                <input id="platform" name="platform" v-model="form.platform" type="text" aria-required="true"
-                    class="form-input" required />
+                <label for="release_date" class="form-label">Release Date</label>
+                <input id="release_date" name="release_date" v-model="form.release_date" type="date"
+                    aria-required="true" class="form-input" />
             </div>
+        </div>
+        <div v-if="distributableType === 'Show'" class="fieldContainer">
             <div class="form-group">
                 <label for="release_date" class="form-label">Release Date</label>
                 <input id="release_date" name="release_date" v-model="form.release_date" type="date"

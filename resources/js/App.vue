@@ -1,9 +1,10 @@
 <template>
-    <nav class="nav-element">
-        <router-link class="nav-link" to="/">Home</router-link>
-        <router-link class="nav-link" to="/distributables">Distributables</router-link>
-        <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
-    </nav>
+    <NavBar />
+    <!-- <nav class="nav-element"> -->
+    <!--     <router-link class="nav-link" to="/">Home</router-link> -->
+    <!--     <router-link class="nav-link" to="/distributables">Distributables</router-link> -->
+    <!--     <router-link class="nav-link" to="/patrons/list">Patrons</router-link> -->
+    <!-- </nav> -->
     <div class="contentWrapper">
         <router-view />
         <Teleport to="body">
@@ -19,6 +20,7 @@
 import '../css/app.css';
 import Toast from './Components/Toast/Toast.vue';
 import Cart from './Views/Cart/Cart.vue';
+import NavBar from './Components/NavBar/NavBar.vue';
 </script>
 
 <style>
@@ -61,15 +63,6 @@ th {
     font-weight: bold;
 }
 
-nav {
-    display: flex;
-    gap: 10px;
-    font-size: 24px;
-    border-bottom: 1px solid gray;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
 select {
     background-color: gray;
     color: black;
@@ -102,15 +95,6 @@ select {
 .fieldContainer {
     display: flex;
     gap: 10px;
-}
-
-.nav-link {
-    padding: 4px;
-}
-
-.nav-link:hover {
-    background-color: gray;
-    color: black;
 }
 
 .newBookForm {

@@ -5,11 +5,13 @@ import Pagination from '../../Components/Pagination/Pagination.vue';
 import { FaSort } from 'vue3-icons/fa';
 import { ref, watch, onMounted } from 'vue';
 import { Distributable } from '../../models/distributables/distributable';
+import { useMediaQuery } from '../../Composables/useMediaQuery';
 
 defineOptions({
     name: "DistributablesListView"
 })
 
+const isMobile = useMediaQuery('(max-width: 600px)');
 const distributables = ref<Distributable[]>([]);
 const newBookModalShown = ref(false);
 const sortAsc = ref('asc');
@@ -107,7 +109,48 @@ watch(distributables, () => {
                 <div class="bookListHeaderContainer">
                     <h1>Distributables</h1>
                 </div>
-                <table class="bookTable">
+                <!-- Mobile layout -->
+                <div
+                    class="distributableListMobileWrapper"
+                    v-if="isMobile">
+                    <div
+                        v-for="distributable in distributables"
+                        :key="distributable.id"
+                        class="distributableListMobileItem"
+                        :to="{
+                            name: 'distributable-detail',
+                            params: { id: distributable.id }
+                        }"
+                        @click="$router.push({
+                            name: 'distributable-detail',
+                            params: { id: distributable.id }
+                        })"
+                    >
+                        <div>Type: {{distributable.type}}</div>
+                        <div>Title: {{distributable.title}}</div>
+
+                        <div v-if="distributable.type === 'Book' && distributable.published_date">
+                            Published Date:
+                            {{ new Date(distributable.published_date).toLocaleDateString() }}
+                        </div>
+                        <div v-if="distributable.type !== 'Book' && distributable.release_date">
+                            Release Date:
+                            {{ new Date(distributable.release_date).toLocaleDateString() }}
+
+                        </div>
+                        <div>
+                            Available:
+                            <span
+                            :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'"
+                            >
+                                {{distributable.checked_in ? 'Yes' : 'No'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop layout -->
+                <table class="bookTable" v-if="!isMobile">
                     <thead>
                         <tr>
                             <th v-on:click="sortDistributables('type')">
@@ -117,7 +160,6 @@ watch(distributables, () => {
                                 </div>
                             </th>
                             <th v-on:click="sortDistributables('title')">
-
                                 <div class="tableHeaderContainer">
                                     <div class="h-full flex items-center justify-center">Title</div>
                                     <FaSort class="self-start" size="1em" />
@@ -167,9 +209,9 @@ watch(distributables, () => {
                     </tbody>
                 </table>
             </div>
-        <div class="paginationWrapper">
-            <Pagination :callback="updateCurrentPage" :pageNumber="currentPage" :isNextPage="isNextPage"/>
-        </div>
+            <div class="paginationWrapper">
+                <Pagination :callback="updateCurrentPage" :pageNumber="currentPage" :isNextPage="isNextPage"/>
+            </div>
         </div>
         <div>
             <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">
@@ -189,13 +231,16 @@ thead, th{
 table{
     border-collapse: collapse;
 }
+
 .tableListItem{
     height: 5px;
     flex-grow: 0;
 }
 
 .tableBox{
-    height: 75%;
+    height: 70%;
+    overflow-y: auto;
+    border-bottom: 1px solid white;
 }
 
 .tableSectionWrapper {
@@ -208,6 +253,27 @@ table{
     overflow-y: auto;
 }
 
+.distributableListMobileItem{
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 4px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.distributableListMobileItem:hover {
+    background-color: gray;
+    color: black;
+}
+
+.distributableListMobileWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .sidebar {
     border-radius: 0.5rem;
     border: 1px solid white;
@@ -216,7 +282,7 @@ table{
     width: 20%;
     padding: 4px;
     background-color: var(--main-bg-color);
-    z-index: 9;
+    z-index: 8;
 }
 
 .bookTable {
@@ -252,7 +318,7 @@ table{
 }
 
 .paginationWrapper{
-    justify-self: flex-start;
+    align-self: flex-end
 }
 
 @media only screen and (max-width: 600px) {
@@ -262,6 +328,15 @@ table{
         bottom: 0;
         height: 20%;
         width: 100%;
+    }
+
+    .tableBox{
+        overflow-x: hidden;
+    }
+
+    .sort-wrapper{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
 }
 </style>
