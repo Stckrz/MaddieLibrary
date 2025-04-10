@@ -3,11 +3,13 @@ import CreatePatronView from './CreatePatronView.vue';
 import Modal from '../../Components/Modal/Modal.vue';
 import { ref, onMounted } from 'vue';
 import { Patron } from '../../models/patrons/patronModel';
+import { useMediaQuery } from '../../Composables/useMediaQuery';
 
 defineOptions({
     name: 'PatronList',
 });
 
+const isMobile = useMediaQuery('(max-width: 600px)');
 const patrons = ref<Patron[]>([]);
 const newPatronModalShown = ref(false);
 
@@ -39,7 +41,20 @@ onMounted(() => {
                 New Patron
             </button>
         </div>
-        <table class="patronList">
+        <div v-if="isMobile" class="mobilePatronListContainer">
+            <div
+                v-for="patron in patrons"
+                :key="patron.id"
+                class="mobileTableListItem"
+                @click="$router.push({name: 'patron-detail', params: {id: patron.id}})"
+            >
+                <div>Last Name: {{patron.lastName}}</div>
+                <div>First Name: {{patron.firstName}}</div>
+                <div>Card Number: {{ patron.card_number }}</div>
+                <div>Email: {{ patron.email }}</div>
+            </div>
+        </div>
+        <table class="patronList" v-if="!isMobile">
             <tbody>
                 <tr>
                     <td>
@@ -80,8 +95,28 @@ onMounted(() => {
 </template>
 
 <style>
+.mobilePatronListContainer{
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 90%;
+}
+
+.mobileTableListItem {
+    border-radius: 0.25rem;
+    transition: background-color 0.5s linear, color 0.5s linear;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobileTableListItem:hover {
+    background-color: gray;
+    color: black;
+}
+
 .patronListContainer {
     width: 100%;
+    height: 100%;
     align-self: flex-start;
 }
 

@@ -126,25 +126,36 @@ watch(distributables, () => {
                             params: { id: distributable.id }
                         })"
                     >
-                        <div>Type: {{distributable.type}}</div>
-                        <div>Title: {{distributable.title}}</div>
-
-                        <div v-if="distributable.type === 'Book' && distributable.published_date">
-                            Published Date:
-                            {{ new Date(distributable.published_date).toLocaleDateString() }}
+                        <div class="distributableMobileImageContainer">
+                            <img
+                                class="distributableMobileThumbnail"
+                                v-if="distributable.img_url"
+                                :src="distributable.img_url"
+                            />
+                            <div v-else class="distributableMobileThumbnail">
+                            </div>
                         </div>
-                        <div v-if="distributable.type !== 'Book' && distributable.release_date">
-                            Release Date:
-                            {{ new Date(distributable.release_date).toLocaleDateString() }}
+                        <div class="mobileDistributableInformation">
+                            <div>Type: {{distributable.type}}</div>
+                            <div>Title: {{distributable.title}}</div>
 
-                        </div>
-                        <div>
-                            Available:
-                            <span
-                            :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'"
-                            >
-                                {{distributable.checked_in ? 'Yes' : 'No'}}
-                            </span>
+                            <div v-if="distributable.type === 'Book' && distributable.published_date">
+                                Published Date:
+                                {{ new Date(distributable.published_date).toLocaleDateString() }}
+                            </div>
+                            <div v-if="distributable.type !== 'Book' && distributable.release_date">
+                                Release Date:
+                                {{ new Date(distributable.release_date).toLocaleDateString() }}
+
+                            </div>
+                            <div>
+                                Available:
+                                <span
+                                :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'"
+                                >
+                                    {{distributable.checked_in ? 'Yes' : 'No'}}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -210,11 +221,18 @@ watch(distributables, () => {
                 </table>
             </div>
             <div class="paginationWrapper">
-                <Pagination :callback="updateCurrentPage" :pageNumber="currentPage" :isNextPage="isNextPage"/>
+                <Pagination
+                    :callback="updateCurrentPage"
+                    :pageNumber="currentPage"
+                    :isNextPage="isNextPage"
+                />
             </div>
         </div>
         <div>
-            <Modal :closeModal="toggleNewBookModal" :modalShown="newBookModalShown">
+            <Modal
+                :closeModal="toggleNewBookModal"
+                :modalShown="newBookModalShown"
+            >
                 <CreateDistributableView />
             </Modal>
         </div>
@@ -253,26 +271,6 @@ table{
     overflow-y: auto;
 }
 
-.distributableListMobileItem{
-    margin-top: 4px;
-    margin-bottom: 4px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 4px;
-    width: 100%;
-    cursor: pointer;
-}
-
-.distributableListMobileItem:hover {
-    background-color: gray;
-    color: black;
-}
-
-.distributableListMobileWrapper{
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
 
 .sidebar {
     border-radius: 0.5rem;
@@ -319,6 +317,40 @@ table{
 
 .paginationWrapper{
     align-self: flex-end
+}
+
+/* mobile specific styles */
+.distributableListMobileItem{
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 4px;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    gap: 4px;
+}
+
+.distributableMobileThumbnail{
+    object-fit: cover;
+    height: 100%;
+}
+
+.distributableMobileImageContainer{
+    height: 100px;
+    width: 20%;
+}
+
+.distributableListMobileItem:hover {
+    background-color: gray;
+    color: black;
+}
+
+.distributableListMobileWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 @media only screen and (max-width: 600px) {
