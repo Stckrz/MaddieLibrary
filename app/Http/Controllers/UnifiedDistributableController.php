@@ -25,11 +25,11 @@ class UnifiedDistributableController extends Controller
         }
 
         // Example of filtering by "checked_in"
-        if ($request->has('checked_in')) {
+        // if ($request->has('checked_in')) {
             // Convert the parameter to a boolean
-            $checkedIn = filter_var($request->input('checked_in'), FILTER_VALIDATE_BOOLEAN);
-            $query->where('checked_in', $checkedIn);
-        }
+        //     $checkedIn = filter_var($request->input('checked_in'), FILTER_VALIDATE_BOOLEAN);
+        //     $query->where('checked_in', $checkedIn);
+        // }
         //sorting logic
         if ($request->has('sort_by')) {
             $sortField = $request->input('sort_by');

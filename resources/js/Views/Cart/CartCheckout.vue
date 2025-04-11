@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { useCartStore } from '../../Stores/cartStore';
+import { checkoutDistributable } from '../../Lib/Api/checkout';
+import { useToastStore } from '../../Stores/toastStore';
+import { ref } from 'vue';
+import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
+import { useRouter } from 'vue-router';
 
 defineOptions({
     name: 'CartCheckout',
@@ -8,7 +13,32 @@ defineOptions({
 
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
+const router = useRouter();
+const toastStore = useToastStore();
+const clearCartDialogue = ref(false);
 
+const executeCheckouts = async () => {
+    let checkedOutItems = 0;
+    for(const distributable of cartState.value.cartDistributables){
+        if(cartState.value.patron?.id && distributable.id){
+            const response = await checkoutDistributable(cartState.value.patron?.id, distributable.id)
+            if(response.message){
+                checkedOutItems += 1;
+                cartStore.removeFromCart(distributable.id);
+            }
+            if(response.error){
+                toastStore.addToast(response.error, "error");
+            }
+        }
+    }
+    toastStore.addToast(`${checkedOutItems} items checked out.`, "success");
+};
+
+const clearCart = () => {
+    cartStore.clearCartState();
+    clearCartDialogue.value = false;
+    router.push({ path: '/distributables' })
+}
 </script>
 
 <template>
@@ -59,6 +89,11 @@ const { cartState } = storeToRefs(cartStore);
                 </tr>
             </tbody>
         </table>
+        <button @click="executeCheckouts">checkout</button>
+        <button @click="()=>{clearCartDialogue = true}">Clear Cart</button>
+        <ConfirmationBox :callback="clearCart" :dialogue-shown="clearCartDialogue" :closeDialogue="()=>{clearCartDialogue = false}">
+            Really Clear Cart?
+        </ConfirmationBox>
     </div>
 </template>
 

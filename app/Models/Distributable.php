@@ -12,9 +12,22 @@ abstract class Distributable extends Model
     protected $fillable = [
         'title',
         'synopsis',
-        'checked_in',
     ];
     protected $casts = [
-        'checked_in' => 'boolean',
     ];
+
+    protected $appends = ['isCheckedOut'];
+
+    //returns a checkout for this item, if it has not been checked in
+    public function currentCheckout()
+    {
+        return $this->hasOne(Checkout::class, 'distributable_id', 'id');
+    }
+
+    //returns a bool value whether or not there is a checkout for this item, that has not been checked in
+    public function getIsCheckedOutAttribute()
+    {
+        return $this->currentCheckout()->exists();
+    }
+
 }

@@ -14,10 +14,8 @@ class Show extends Distributable
         'synopsis',
         'img_url',
         'thumbnail',
-        'checked_in',
     ];
     protected $casts = [
-        'checked_in' => 'boolean',
     ];
 
     protected $attributes = [

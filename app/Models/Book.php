@@ -16,10 +16,8 @@ class Book extends Distributable
         'img_url',
         'thumbnail',
         'isbn',
-        'checked_in',
     ];
     protected $casts = [
-        'checked_in' => 'boolean',
     ];
 
     // Automatically sets the type for new Book instances.

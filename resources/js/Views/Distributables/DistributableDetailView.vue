@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { Distributable } from '../../models/distributables/distributable';
 import { useCartStore } from '../../Stores/cartStore';
 import { storeToRefs } from 'pinia';
+import { checkinDistributable } from '../../Lib/Api/checkout';
 
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
@@ -82,6 +83,20 @@ const addToCart = () => {
         cartStore.addToCart(distributable.value)
     }
 }
+
+const checkinDistributableItem = async () => {
+    if(distributable?.value?.id){
+        const response = await checkinDistributable(distributable.value.id)
+        if(response.message){
+            toastStore.addToast(response.message, "success");
+            return;
+        }
+        if(response.error){
+            toastStore.addToast(response.error, "error");
+            return;
+        }
+    }
+}
 </script>
 
 <template>
@@ -96,8 +111,8 @@ const addToCart = () => {
                 </div>
                 <div>
                     <span>Available: </span>
-                    <span :class="distributable?.checked_in ? 'checkedIn' : 'checkedOut'" >
-                        {{ distributable?.checked_in ? 'Yes' : 'No' }}
+                    <span :class="distributable?.isCheckedOut ? 'checkedOut' : 'checkedIn'" >
+                        {{ distributable?.isCheckedOut ? 'No' : 'Yes' }}
                     </span>
                 </div>
                 <div v-if="distributable?.type === 'Cd'">
@@ -155,7 +170,8 @@ const addToCart = () => {
         <div class="buttonBox">
             <button @click="toggleDialogue">Delete</button>
             <button @click="toggleEditModal">Edit</button>
-            <button @click="addToCart" v-if="cartState.patron && distributable?.checked_in">Add</button>
+            <button @click="addToCart" v-if="cartState.patron && !distributable?.isCheckedOut">Add</button>
+            <button v-if="distributable?.isCheckedOut" @click="checkinDistributableItem">Check In</button>
         </div>
         <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>

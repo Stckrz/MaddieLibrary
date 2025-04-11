@@ -8,5 +8,6 @@ class UnifiedDistributable extends Distributable
 {
     use HasFactory;
     // Since this is a concrete class, you can use it to query the distributables table.
+    //
 }
 

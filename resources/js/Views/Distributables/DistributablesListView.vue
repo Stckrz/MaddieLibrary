@@ -151,9 +151,9 @@ watch(distributables, () => {
                             <div>
                                 Available:
                                 <span
-                                :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'"
+                                :class="distributable.isCheckedOut ? 'checkedOut' : 'checkedIn'"
                                 >
-                                    {{distributable.checked_in ? 'Yes' : 'No'}}
+                                    {{distributable.isCheckedOut ? 'No' : 'Yes'}}
                                 </span>
                             </div>
                         </div>
@@ -213,8 +213,8 @@ watch(distributables, () => {
                                 ) && !distributable.release_date">
                                 No date found
                             </td>
-                            <td :class="distributable.checked_in ? 'checkedIn' : 'checkedOut'">
-                                {{distributable.checked_in ? 'Yes' : 'No'}}
+                            <td :class="distributable.isCheckedOut ? 'checkedOut' : 'checkedIn'">
+                                {{distributable.isCheckedOut ? 'No' : 'Yes'}}
                             </td>
                         </tr>
                     </tbody>

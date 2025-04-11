@@ -50,7 +50,6 @@ class MovieController extends Controller
             'synopsis' => 'nullable|string',
             'img_url' => 'nullable|string',
             'thumbnail' => 'nullable|string',
-            'checked_in' => 'required|boolean',
         ]);
         $movie = Movie::create($validated);
         return response()->json([
@@ -87,7 +86,6 @@ class MovieController extends Controller
             'synopsis' => 'nullable|string',
             'img_url' => 'nullable|string',
             'thumbnail' => 'nullable|string',
-            'checked_in' => 'required|boolean',
         ]);
         $movie->update($validated);
         return response()->json([
