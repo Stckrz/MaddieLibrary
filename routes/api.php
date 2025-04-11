@@ -34,7 +34,6 @@ Route::get('/searchShows', [TmdbController::class, 'getShowsByQuery']);
 Route::get('/searchAlbums', [SpotifyController::class, 'getAlbumsByQuery']);
 
 
-
 Route::get('/message', function () {
     return response()->json(['message' => 'Hewwo uwu']);
 });
