@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import {useMediaQuery} from '../../Composables/useMediaQuery'
 import { FaHamburger } from 'vue3-icons/fa';
-import Cookies from 'js-cookie';
-import { UserInfoCookieObject } from '../../models/auth/authModels';
 import { useUserInfo } from '../../Composables/useUserInfo';
 
 defineOptions({
@@ -12,18 +10,7 @@ defineOptions({
 
 const isMobile = useMediaQuery('(max-width: 600px)');
 const menuShown = ref(false);
-// const userInfo = ref<UserInfoCookieObject | null>(null);
 const {userInfo} = useUserInfo();
-
-// const fetchCookie = () => {
-//     const cookieValue = Cookies.get('userInfo');
-//     if(cookieValue){
-//         userInfo.value = JSON.parse(cookieValue);
-//     }
-// }
-// onMounted(()=>{
-//     fetchCookie();
-// })
 
 const toggleMenu = () => {
     menuShown.value = !menuShown.value;

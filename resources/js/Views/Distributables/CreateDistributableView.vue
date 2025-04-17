@@ -3,8 +3,11 @@ import { useToastStore } from '../../Stores/toastStore';
 import {ref, watch} from 'vue';
 import DistributableSearch from './DistributableSearch.vue';
 import { Distributable, FormFields } from '../../models/distributables/distributable';
+import { createDistributable } from '../../Lib/Api/Distributables/distributableApi';
+import { useUserInfo } from '../../Composables/useUserInfo';
 
 const toastStore = useToastStore();
+const {userInfo} = useUserInfo();
 defineOptions({
     name: 'CreateDistributable',
 });
@@ -23,63 +26,52 @@ const form = ref<FormFields>({
     published_date: null,
     release_date: null,
     isbn: null,
-    checked_in: true,
 });
 
-const createDistributable = async() => {
-            let distributableInputType = ""
-            switch (distributableType.value) {
-                case "Game":
-                    distributableInputType = 'games';
-                    break;
-                case "Cd":
-                    distributableInputType = 'cds';
-                    break;
-                case "Book":
-                    distributableInputType = 'books';
-                    break;
-                case "Movie":
-                    distributableInputType = 'movies';
-                    break;
-                case "Show":
-                    distributableInputType = 'shows';
-                    break;
-            }
-            try {
-                const response = await fetch(`/api/${distributableInputType}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(form.value),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create book');
-                }
-
-                const data = await response.json();
-                console.log(data.message);
-
-                // Clear the form
-                form.value = {
-                    title: '',
-                    author: null,
-                    artist: null,
-                    synopsis: null,
-                    img_url: null,
-                    thumbnail: null,
-                    platform: null,
-                    studio: null,
-                    published_date: null,
-                    release_date: null,
-                    isbn: null,
-                    checked_in: true,
-                };
-                toastStore.addToast("Distributable created successfully!", "success");
-            } catch (error) {
-                console.error('Error creating distributable:', error);
-                toastStore.addToast("Unable to create distributable", "error");
-            }
+const createDistributableHandler = async() => {
+    if(userInfo.value?.token){
+        let distributableInputType = ""
+        switch (distributableType.value) {
+            case "Game":
+                distributableInputType = 'games';
+                break;
+            case "Cd":
+                distributableInputType = 'cds';
+                break;
+            case "Book":
+                distributableInputType = 'books';
+                break;
+            case "Movie":
+                distributableInputType = 'movies';
+                break;
+            case "Show":
+                distributableInputType = 'shows';
+                break;
         }
+        try {
+            await createDistributable(distributableInputType, userInfo.value.token, form.value)
+
+            // Clear the form
+            form.value = {
+                title: '',
+                author: null,
+                artist: null,
+                synopsis: null,
+                img_url: null,
+                thumbnail: null,
+                platform: null,
+                studio: null,
+                published_date: null,
+                release_date: null,
+                isbn: null,
+            };
+            toastStore.addToast("Distributable created successfully!", "success");
+        } catch (error) {
+            console.error('Error creating distributable:', error);
+            toastStore.addToast("Unable to create distributable", "error");
+        }
+    }
+}
 
 const fillFieldsWithSelected = (distributable: Distributable) => {
     switch (distributable.type) {
@@ -89,7 +81,6 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 synopsis: distributable.synopsis,
                 release_date: distributable.release_date,
                 platform: distributable.platform,
-                checked_in: true,
                 img_url: distributable.img_url,
                 thumbnail: distributable.thumbnail,
                 studio: null,
@@ -112,7 +103,6 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 thumbnail: distributable.thumbnail,
                 isbn: distributable.isbn,
                 author: distributable.author,
-                checked_in: true,
                 platform: null,
                 studio: null,
                 artist: null,
@@ -129,7 +119,6 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 artist: distributable.artist,
                 isbn: null,
                 author: null,
-                checked_in: true,
                 platform: null,
                 studio: null,
                 published_date: null
@@ -145,7 +134,6 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 artist: null,
                 isbn: null,
                 author: null,
-                checked_in: true,
                 platform: null,
                 studio: null,
                 published_date: null
@@ -161,7 +149,6 @@ const fillFieldsWithSelected = (distributable: Distributable) => {
                 artist: null,
                 isbn: null,
                 author: null,
-                checked_in: true,
                 platform: null,
                 studio: null,
                 published_date: null
@@ -183,7 +170,6 @@ watch(distributableType, () => {
         published_date: null,
         release_date: null,
         isbn: null,
-        checked_in: true,
     };
 });
 </script>
@@ -201,7 +187,7 @@ watch(distributableType, () => {
             <option>Show</option>
         </select>
     </div>
-    <form class="newDistributableForm" @submit.prevent="createDistributable">
+    <form class="newDistributableForm" @submit.prevent="createDistributableHandler">
         <div class="fieldContainer">
             <DistributableSearch :distributableType="distributableType" :selectItem="fillFieldsWithSelected"/>
             <div class="form-group">

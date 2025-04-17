@@ -4,6 +4,8 @@ import Modal from '../../Components/Modal/Modal.vue';
 import { ref, onMounted } from 'vue';
 import { Patron } from '../../models/patrons/patronModel';
 import { useMediaQuery } from '../../Composables/useMediaQuery';
+import { useUserInfo } from '../../Composables/useUserInfo';
+import { fetchPatrons } from '../../Lib/Api/Patron/PatronApi';
 
 defineOptions({
     name: 'PatronList',
@@ -12,13 +14,16 @@ defineOptions({
 const isMobile = useMediaQuery('(max-width: 600px)');
 const patrons = ref<Patron[]>([]);
 const newPatronModalShown = ref(false);
+const {userInfo} = useUserInfo();
 
-const fetchPatrons = async () => {
-    try {
-        const response = await fetch('/api/patrons');
-        patrons.value = await response.json();
-    } catch (error) {
-        console.error('Error Fetching Patrons: ', error);
+const fetchPatronsHandler = async () => {
+    if(userInfo.value?.token){
+        try {
+            const data = await fetchPatrons(userInfo.value?.token)
+            patrons.value = data;
+        } catch (error) {
+            console.error('Error Fetching Patrons: ', error);
+        }
     }
 };
 
@@ -27,14 +32,14 @@ const toggleNewPatronModal = () => {
 };
 
 onMounted(() => {
-    fetchPatrons();
+    fetchPatronsHandler();
 })
 
 </script>
 
-                    }" @click="$router.push({ name: 'distributable-detail', params: { id: distributable.id } })">
 <template>
-    <div class="patronListContainer">
+    <div v-if="!userInfo?.token">Unauthorized</div>
+    <div v-else class="patronListContainer">
         <div class="patronHeaderBox">
             <h1 class="color-red-950 m-1000">Patrons</h1>
             <button @click="toggleNewPatronModal">

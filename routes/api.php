@@ -22,7 +22,6 @@ Route::apiResource('games', GameController::class);
 Route::apiResource('cds', CdController::class);
 Route::apiResource('movies', MovieController::class);
 Route::apiResource('shows', ShowController::class);
-Route::apiResource('patrons', PatronController::class);
 
 Route::get('/searchGames', [GiantBombController::class, 'getGamesByQuery']);
 
@@ -43,8 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'checkout']);
     Route::post('/checkin/{id}', [CheckoutController::class, 'checkIn']);
     Route::get('/checkouts', [CheckoutController::class, 'index']);
-
-
+    Route::apiResource('patrons', PatronController::class);
 });
 
 Route::get('/message', function () {

@@ -11,6 +11,7 @@ import { storeToRefs } from 'pinia';
 import { checkinDistributable } from '../../Lib/Api/checkout';
 import { UserInfoCookieObject } from '../../models/auth/authModels';
 import Cookies from 'js-cookie';
+import { deleteDistributable } from '../../Lib/Api/Distributables/distributableApi';
 
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
@@ -21,6 +22,7 @@ defineOptions({
 })
 
 const {id} = defineProps<{ id: string }>();
+
 const router = useRouter();
 const distributable = ref<Distributable | null>(null);
 const isEditing = ref(false);
@@ -46,38 +48,37 @@ const fetchDistributable = async (id: string) => {
     }
 }
 
-const deleteDistributable = async () => {
-    let distributableInputType = ""
-    switch (distributable.value?.type) {
-        case "Game":
-            distributableInputType = 'games';
-            break;
-        case "Cd":
-            distributableInputType = 'cds';
-            break;
-        case "Book":
-            distributableInputType = 'books';
-            break;
-        case "Movie":
-            distributableInputType = 'movies';
-            break;
-        case "Show":
-            distributableInputType = 'shows';
-            break;
+const deleteDistributableHandler = async () => {
+    if(!userInfo.value?.token){
+        console.log('shitbutt')
     }
-    try {
-        const response = await fetch(`/api/${distributableInputType}/${id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        })
-        if (!response.ok) {
-            console.error('Unable to delete');
+    if(distributable.value?.id && userInfo.value?.token){
+        let distributableInputType = ""
+        switch (distributable.value?.type) {
+            case "Game":
+                distributableInputType = 'games';
+                break;
+            case "Cd":
+                distributableInputType = 'cds';
+                break;
+            case "Book":
+                distributableInputType = 'books';
+                break;
+            case "Movie":
+                distributableInputType = 'movies';
+                break;
+            case "Show":
+                distributableInputType = 'shows';
+                break;
         }
-        const data = await response.json();
-        toastStore.addToast("Distributable successfully deleted", "success");
-        router.push({ path: '/distributables' })
-    } catch (error) {
-        console.error('Error Deleting Distributable: ', error);
+        try{
+            await deleteDistributable(distributableInputType, distributable.value?.id, userInfo.value?.token);
+            toastStore.addToast("Distributable successfully deleted", "success");
+            router.push({ path: '/distributables' })
+        } catch (error) {
+            console.error('Error deleting Distributable', error);
+            toastStore.addToast("Error deleting distributable", "error");
+        }
     }
 }
 const toggleDialogue = () => {
@@ -183,7 +184,7 @@ const checkinDistributableItem = async () => {
             <button @click="addToCart" v-if="cartState.patron && !distributable?.isCheckedOut">Add</button>
             <button v-if="distributable?.isCheckedOut" @click="checkinDistributableItem">Check In</button>
         </div>
-        <ConfirmationBox :callback="deleteDistributable" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
+        <ConfirmationBox :callback="deleteDistributableHandler" :dialogueShown="dialogueShown" :closeDialogue="toggleDialogue">
             <div>Really delete this?</div>
         </ConfirmationBox>
         <Modal v-if='distributable !== null' :modalShown="isEditing" :closeModal="toggleEditModal">

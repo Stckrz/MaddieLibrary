@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { useUserInfo } from '../../Composables/useUserInfo';
+import { createPatron } from '../../Lib/Api/Patron/PatronApi';
+import { PatronForm } from '../../models/patrons/patronModel';
 import { useToastStore } from '../../Stores/toastStore';
 import { ref } from 'vue';
-
-const form = ref(
+const {userInfo} = useUserInfo();
+const form = ref<PatronForm>(
     {
         lastName: '',
         firstName: '',
@@ -12,17 +15,13 @@ const form = ref(
 )
 const toastStore = useToastStore();
 
-const createPatron = async () => {
+const createPatronHandler = async () => {
+    if(!userInfo.value?.token){
+        toastStore.addToast("Unauthorized", "error");
+        return;
+    }
     try {
-        const response = await fetch('/api/patrons', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form.value),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to create patron');
-        }
+        await createPatron(form.value, userInfo.value?.token)
 
         // Clear the form
         form.value = {
@@ -39,7 +38,7 @@ const createPatron = async () => {
 </script>
 <template>
     <h2>Add New Patron</h2>
-    <form class="newBookForm h-full justify-between" @submit.prevent="createPatron">
+    <form class="newBookForm h-full justify-between" @submit.prevent="createPatronHandler">
         <div class="form-group">
             <label class="form-label">Last Name:</label>
             <input class="form-input" v-model="form.lastName" type="text" required />

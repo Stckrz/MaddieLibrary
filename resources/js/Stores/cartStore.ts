@@ -24,7 +24,7 @@ export const useCartStore = defineStore('cart', () => {
         cartState.value.cartDistributables = cartState.value.cartDistributables.filter(cartDistributable => cartDistributable.id !== id);
     };
 
-    const updatePatron: () => void = (patron?: Patron) => {
+    const updatePatron: (patron: Patron) => void = (patron?: Patron) => {
         if(patron){
             cartState.value.patron = patron;
         }else{

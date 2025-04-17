@@ -58,7 +58,6 @@ class GameController extends BaseController
             'synopsis' => 'nullable|string',
             'img_url' => 'nullable|string',
             'thumbnail' => 'nullable|string',
-            'checked_in' => 'required|boolean',
         ]);
         $game = Game::create($validated);
         return response()->json([
