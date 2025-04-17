@@ -5,3 +5,10 @@ export interface Patron{
     card_number: string,
     email: string,
 }
+
+export interface PatronForm {
+    lastName: string,
+    firstName: string,
+    card_number: string,
+    email: string,
+}

@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Movie;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class MovieController extends Controller
+class MovieController extends BaseController
 {
+    public function __construct()
+    {
+        // Only store, update and destroy require an authenticated Sanctum token
+        $this->middleware('auth:sanctum')
+             ->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

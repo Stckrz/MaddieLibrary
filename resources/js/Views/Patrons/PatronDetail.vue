@@ -2,11 +2,14 @@
 import { useToastStore } from '../../Stores/toastStore';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import { Patron } from '../../models/patrons/patronModel';
+import { Patron, PatronForm } from '../../models/patrons/patronModel';
 import { useCartStore } from '../../Stores/cartStore';
 import { storeToRefs } from 'pinia';
+import { editPatron, fetchPatronById } from '../../Lib/Api/Patron/PatronApi';
+import { useUserInfo } from '../../Composables/useUserInfo';
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
+const { userInfo } = useUserInfo();
 
 defineOptions({
     name: 'PatronDetailView',
@@ -17,51 +20,48 @@ const id = route.params.id as string;
 const toastStore = useToastStore();
 const patron = ref<Patron | null>(null);
 const isEditing = ref(false);
-const form = ref({
+const form = ref<PatronForm>({
     lastName: '',
     firstName: '',
     card_number: '',
     email: '',
 })
 
-const fetchPatron = async (patronId: string) => {
-    try {
-        const response = await fetch(`/api/patrons/${patronId}`)
-        const patronData = await response.json();
-        patron.value = patronData;
-        form.value.lastName = patronData.lastName;
-        form.value.firstName = patronData.firstName;
-        form.value.card_number = patronData.card_number;
-        form.value.email = patronData.email;
-    } catch (error) {
-        console.error('Error Fetching patron: ', error);
+const fetchPatronHandler = async (patronId: string) => {
+    if(userInfo.value?.token){
+        try {
+            const patronData = await fetchPatronById(parseInt(patronId), userInfo.value?.token);
+            patron.value = patronData;
+            form.value.lastName = patronData.lastName;
+            form.value.firstName = patronData.firstName;
+            form.value.card_number = patronData.card_number;
+            form.value.email = patronData.email;
+        } catch (error) {
+            console.error('Error Fetching patron: ', error);
+        }
     }
 }
-const editPatron = async () => {
-    try {
-        const response = await fetch(`/api/patrons/${patron?.value?.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(form.value),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-
-            throw new Error(data.message);
-
+const editPatronHandler = async () => {
+    if(!userInfo.value?.token){
+        toastStore.addToast("Unauthenticated", "error");
+    }
+    if(patron.value?.id && userInfo.value?.token){
+        try {
+            await editPatron(patron?.value?.id, form.value, userInfo.value?.token)
+            const patronData = await fetchPatronById(parseInt(id), userInfo.value?.token);
+            patron.value = patronData;
+            form.value.lastName = patronData.lastName;
+            form.value.firstName = patronData.firstName;
+            form.value.card_number = patronData.card_number;
+            form.value.email = patronData.email;
+            isEditing.value = false;
+            // Clear the form
+        } catch (error: any) {
+            if(error.message){
+            toastStore.addToast(error.message, "error");
+            }
+            console.error('Error editing patron:', error);
         }
-        form.value = { ...data.data };
-        fetchPatron(id)
-        isEditing.value = false;
-        // Clear the form
-    } catch (error: any) {
-        if(error.message){
-        toastStore.addToast(error.message, "error");
-        }
-        console.error('Error editing patron:', error);
     }
 }
 const editHandler = () => {
@@ -73,13 +73,15 @@ const addPatronToCart = () => {
         cartStore.updatePatron(patron.value);
     }
 }
+
 onMounted(() => {
-    fetchPatron(id);
+    fetchPatronHandler(id);
 })
 
 </script>
 <template>
-    <div v-if="patron" class="bookDetailContainer">
+    <div v-if="!userInfo?.token">Unauthorized</div>
+    <div v-else v-if="patron" class="bookDetailContainer">
         <h1>Patron detail page for {{ patron.firstName }} {{ patron.lastName }}</h1>
             <div class="patronTableContainer">
                 <div v-if="!isEditing">
@@ -117,7 +119,7 @@ onMounted(() => {
                     <button v-on:click="editHandler">
                         {{ !isEditing ? "Edit" : "Cancel" }}
                     </button>
-                    <button v-if="isEditing" v-on:click="editPatron">Submit</button>
+                    <button v-if="isEditing" v-on:click="editPatronHandler">Submit</button>
                     <button @click="addPatronToCart" v-if="cartState.patron === null">Create Order</button>
                 </div>
             </div>

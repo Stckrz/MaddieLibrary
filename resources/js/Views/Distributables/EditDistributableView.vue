@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { useUserInfo } from '../../Composables/useUserInfo.js';
+import { editDistributable } from '../../Lib/Api/Distributables/distributableApi.js';
 import { Distributable, FormFields } from '../../models/distributables/distributable.js';
 import { useToastStore } from '../../Stores/toastStore';
 import { ref, watch } from 'vue';
 
 const toastStore = useToastStore();
+const {userInfo} = useUserInfo();
 defineOptions({
     name: 'EditDistributable'
 });
@@ -26,7 +29,6 @@ const form = ref<FormFields>({
     published_date: null,
     release_date: null,
     isbn: null,
-    checked_in: null,
 });
 
 const populateForm = () => {
@@ -34,7 +36,6 @@ const populateForm = () => {
     form.value = {
         title: props.distributable.title,
         synopsis: props.distributable.synopsis,
-        checked_in: props.distributable.checked_in,
         author: props.distributable.type === "Book" ? props.distributable.author : null,
         published_date: props.distributable.type === "Book" ? props.distributable.published_date : null,
         isbn: props.distributable.type === "Book" ? props.distributable.isbn : null,
@@ -47,40 +48,32 @@ const populateForm = () => {
     };
 };
 
-const editDistributable = async () => {
-    let distributableInputType = "";
-    switch (distributableType.value) {
-        case "Game":
-            distributableInputType = 'games';
-            break;
-        case "Cd":
-            distributableInputType = 'cds';
-            break;
-        case "Book":
-            distributableInputType = 'books';
-            break;
-        case "Movie":
-            distributableInputType = 'movies';
-            break;
-        case "Show":
-            distributableInputType = 'shows';
-            break;
-    }
-
-    try {
-        const response = await fetch(`/api/${distributableInputType}/${props.distributable.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form.value),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to edit distributable');
-        };
-        toastStore.addToast("Distributable edited successfully!", "success");
-    } catch (error) {
-        console.error('Error editing distributable:', error);
-        toastStore.addToast("Unable to edit distributable", "error");
+const editDistributableHandler = async () => {
+    if(props.distributable.id && userInfo.value?.token){
+        let distributableInputType = "";
+        switch (distributableType.value) {
+            case "Game":
+                distributableInputType = 'games';
+                break;
+            case "Cd":
+                distributableInputType = 'cds';
+                break;
+            case "Book":
+                distributableInputType = 'books';
+                break;
+            case "Movie":
+                distributableInputType = 'movies';
+                break;
+            case "Show":
+                distributableInputType = 'shows';
+                break;
+        }
+        try{
+            editDistributable(distributableInputType, props.distributable?.id, userInfo.value?.token, form.value)
+        } catch (error) {
+            console.error('Error editing distributable:', error);
+            toastStore.addToast("Unable to edit distributable", "error");
+        }
     }
 };
 
@@ -97,7 +90,7 @@ watch(() => props.distributable, (newVal) => {
             <div id="distributableType">{{ distributable?.type }}</div>
         </label>
     </div>
-    <form class="newDistributableForm" @submit.prevent="editDistributable">
+    <form class="newDistributableForm" @submit.prevent="editDistributableHandler">
         <div class="fieldContainer">
             <div class="form-group">
                 <label for="title" class="form-label">Title</label>

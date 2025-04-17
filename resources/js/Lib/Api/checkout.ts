@@ -1,5 +1,5 @@
 //checks out a distributable gives a patronId and distributableId
-export const checkoutDistributable = async (patronId: number, distributableId: number) => {
+export const checkoutDistributable = async (patronId: number, distributableId: number, token: string) => {
     const checkoutObject = {
         "distributable_id": distributableId,
         "patron_id": patronId
@@ -9,7 +9,8 @@ export const checkoutDistributable = async (patronId: number, distributableId: n
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accepts': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(checkoutObject),
         })
@@ -21,13 +22,14 @@ export const checkoutDistributable = async (patronId: number, distributableId: n
 };
 
 //checks in a distributable by id
-export const checkinDistributable = async (distributableId: number) => {
+export const checkinDistributable = async (distributableId: number, token: string) => {
     try{
         const response = await fetch(`/api/checkin/${distributableId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accepts': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
         })
         const data = await response.json();
@@ -38,12 +40,12 @@ export const checkinDistributable = async (distributableId: number) => {
 };
 
 //lists all checkouts
-export const listCheckouts = async () => {
-    try{
-        const response = await fetch(`/api/checkouts`);
-        const data = await response.json();
-        return data;
-    }catch (error) {
-        console.error(error);
-    }
-};
+// export const listCheckouts = async (token: string) => {
+//     try{
+//         const response = await fetch(`/api/checkouts`);
+//         const data = await response.json();
+//         return data;
+//     }catch (error) {
+//         console.error(error);
+//     }
+// };

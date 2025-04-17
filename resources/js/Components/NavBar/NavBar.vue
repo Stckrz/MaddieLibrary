@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import {useMediaQuery} from '../../Composables/useMediaQuery'
 import { FaHamburger } from 'vue3-icons/fa';
+import { useUserInfo } from '../../Composables/useUserInfo';
 
 defineOptions({
     name: 'Navbar',
@@ -9,6 +10,7 @@ defineOptions({
 
 const isMobile = useMediaQuery('(max-width: 600px)');
 const menuShown = ref(false);
+const {userInfo} = useUserInfo();
 
 const toggleMenu = () => {
     menuShown.value = !menuShown.value;
@@ -22,7 +24,9 @@ const toggleMenu = () => {
     >
         <FaHamburger
             @click="toggleMenu"
-            class="hamburgerIcon" size="2em"/>
+            class="hamburgerIcon" size="2em"
+        />
+        <!-- <div class="userName" v-if="userInfo !== null">{{userInfo.name}}</div> -->
         <Transition
             name="hamburgerMenu"
             tag="div"
@@ -33,9 +37,11 @@ const toggleMenu = () => {
                 class="hamburgerMenu"
             >
                 <nav class="nav-element">
-                    <router-link class="nav-link" to="/">Home</router-link>
-                    <router-link class="nav-link" to="/distributables">Distributables</router-link>
-                    <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
+                    <div class="nav-link-container">
+                        <router-link class="nav-link" to="/">Home</router-link>
+                        <router-link class="nav-link" to="/distributables">Distributables</router-link>
+                        <router-link v-if="userInfo?.token" class="nav-link" to="/patrons/list">Patrons</router-link>
+                    </div>
                 </nav>
             </div>
         </Transition>
@@ -44,9 +50,12 @@ const toggleMenu = () => {
         class="navbarWrapper"
         v-else>
         <nav class="nav-element">
-            <router-link class="nav-link" to="/">Home</router-link>
-            <router-link class="nav-link" to="/distributables">Distributables</router-link>
-            <router-link class="nav-link" to="/patrons/list">Patrons</router-link>
+            <div>
+                <router-link class="nav-link" to="/">Home</router-link>
+                <router-link class="nav-link" to="/distributables">Distributables</router-link>
+                <router-link v-if="userInfo?.token" class="nav-link" to="/patrons/list">Patrons</router-link>
+            </div>
+            <div class="userName" v-if="userInfo?.name">{{userInfo.name}}</div>
         </nav>
     </div>
 </template>
@@ -80,12 +89,29 @@ nav {
     gap: 10px;
     font-size: 24px;
     border-bottom: 1px solid gray;
-    margin-left: 10px;
-    margin-right: 10px;
+}
+
+.userName{
+    justify-self: flex-end;
+    padding: 4px;
 }
 
 .nav-link {
     padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.nav-link-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.nav-element{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .nav-link:hover {
@@ -97,6 +123,10 @@ nav {
     nav{
         border: none;
         flex-direction: column;
+    }
+    .nav-element{
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 </style>

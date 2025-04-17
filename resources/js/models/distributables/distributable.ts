@@ -51,5 +51,4 @@ export interface FormFields {
     published_date: string | null,
     release_date: string | null,
     isbn: string | null,
-    checked_in: boolean | null,
 }

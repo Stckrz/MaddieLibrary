@@ -6,12 +6,18 @@ import PatronList from '../Views/Patrons/PatronList.vue';
 import PatronDetailView from '../Views/Patrons/PatronDetail.vue';
 import CartCheckout from '../Views/Cart/CartCheckout.vue';
 import NotFoundView from '../Views/NotFoundView.vue';
+import LoginView from '../Views/Auth/login.vue';
 
 const routes = [
     {
         path: '/',
         name: 'home',
         component: HomeView,
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginView,
     },
     {
         path: '/distributables',
