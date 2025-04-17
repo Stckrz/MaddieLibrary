@@ -168,4 +168,11 @@ h1 {
     display: flex;
     gap: 0.5rem;
 }
+
+@media only screen and (max-width: 600px) {
+    .bookDetailContainer{
+        padding: 8px;
+        border: none;
+    }
+}
 </style>
