@@ -130,6 +130,7 @@ select {
 .contentWrapper {
     width: 100%;
     height: 94dvh;
+    max-height: 94dvh;
     display: flex;
     margin-top: 4px;
     align-items: center;

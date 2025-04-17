@@ -362,10 +362,16 @@ table{
         bottom: 0;
         height: 20%;
         width: 100%;
+        z-index: 0;
     }
 
     .tableBox{
         overflow-x: hidden;
+        height: 90%;
+    }
+
+    .tableSectionWrapper{
+        height: 78%;
     }
 
     .sort-wrapper{

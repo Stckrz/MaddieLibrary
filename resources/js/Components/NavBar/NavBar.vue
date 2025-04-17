@@ -74,9 +74,11 @@ const toggleMenu = () => {
 }
 
 .hamburgerMenu{
+    position: fixed;
+    width: 100%;
     background-color: var(--main-bg-color);
     height: 100dvh;
-    z-index: 99;
+    z-index: 2;
 }
 
 .hamburgerIcon{

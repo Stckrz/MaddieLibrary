@@ -198,19 +198,23 @@ watch(distributableType, () => {
         </div>
         <div v-if="distributableType === 'Book'" class="fieldContainer">
             <div class="form-group">
-                <label for="isbn" class="form-label">ISBN</label>
-                <input id="isbn" name="isbn" v-model="form.isbn" type="text" aria-required="true" class="form-input"
-                    required />
+                <div class="form-group">
+                    <label for="isbn" class="form-label">ISBN</label>
+                    <input id="isbn" name="isbn" v-model="form.isbn" type="text" aria-required="true" class="form-input"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="author" class="form-label">Author</label>
+                    <input id="author" name="author" v-model="form.author" type="text" aria-required="true"
+                        class="form-input" required />
+                </div>
             </div>
             <div class="form-group">
-                <label for="author" class="form-label">Author</label>
-                <input id="author" name="author" v-model="form.author" type="text" aria-required="true"
-                    class="form-input" required />
-            </div>
-            <div class="form-group">
-                <label for="published_date" class="form-label">Published Date</label>
-                <input id="published_date" name="published_date" v-model="form.published_date" type="date"
-                    aria-required="true" class="form-input" required />
+                <div class="form-group">
+                    <label for="published_date" class="form-label">Published Date</label>
+                    <input id="published_date" name="published_date" v-model="form.published_date" type="date"
+                        aria-required="true" class="form-input" required />
+                </div>
             </div>
         </div>
         <div v-if="distributableType === 'Cd'" class="fieldContainer">

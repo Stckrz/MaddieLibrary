@@ -172,7 +172,7 @@ const checkinDistributableItem = async () => {
                         {{ distributable.release_date }}
                     </div>
                 </div>
-                <div>
+                <div class="synopsisContainer">
                     Synopsis:
                     {{ distributable?.synopsis }}
                 </div>
@@ -199,19 +199,21 @@ const checkinDistributableItem = async () => {
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     border: 1px solid white;
 }
 .contentContainer{
     display: flex;
     padding: 4px;
     gap: 20px;
+    height: 90%;
+    overflow: auto;
 }
 .imageContainer{
     width: 20%;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
 }
 .informationWrapper{
     width: 80%;
@@ -219,11 +221,15 @@ const checkinDistributableItem = async () => {
     gap: 6px;
     flex-direction: column;
     padding: 4px;
+    height: 40%;
 }
 .buttonBox{
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+}
+.synopsisContainer{
+    height: 50%;
 }
 @media only screen and (max-width: 600px) {
     .contentContainer{
@@ -231,7 +237,8 @@ const checkinDistributableItem = async () => {
         gap: 20px;
     }
     .distributableWrapper{
-        height: 100%;
+        height: 99%;
+        border: none;
     }
     .imageContainer{
         align-self: center;
