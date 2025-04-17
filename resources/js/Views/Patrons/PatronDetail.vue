@@ -9,7 +9,7 @@ import { editPatron, fetchPatronById } from '../../Lib/Api/Patron/PatronApi';
 import { useUserInfo } from '../../Composables/useUserInfo';
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
-const {userInfo} = useUserInfo();
+const { userInfo } = useUserInfo();
 
 defineOptions({
     name: 'PatronDetailView',

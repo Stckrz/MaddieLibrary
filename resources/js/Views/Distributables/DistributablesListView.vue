@@ -6,6 +6,7 @@ import { FaSort } from 'vue3-icons/fa';
 import { ref, watch, onMounted } from 'vue';
 import { Distributable } from '../../models/distributables/distributable';
 import { useMediaQuery } from '../../Composables/useMediaQuery';
+import { useUserInfo } from '../../Composables/useUserInfo';
 
 defineOptions({
     name: "DistributablesListView"
@@ -17,6 +18,7 @@ const newBookModalShown = ref(false);
 const sortAsc = ref('asc');
 const sortCategory = ref("distributables");
 const sortBy = ref("");
+const { userInfo } = useUserInfo();
 
 const currentPage = ref<number>(1);
 const isNextPage = ref<boolean>(true);
@@ -102,7 +104,7 @@ watch(distributables, () => {
                     Shows
                 </label>
             </div>
-            <button v-on:click="toggleNewBookModal">New</button>
+            <button v-if="userInfo?.token" v-on:click="toggleNewBookModal">New</button>
         </div>
         <div class="tableSectionWrapper">
             <div class="tableBox">
