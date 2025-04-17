@@ -9,6 +9,8 @@ import { Distributable } from '../../models/distributables/distributable';
 import { useCartStore } from '../../Stores/cartStore';
 import { storeToRefs } from 'pinia';
 import { checkinDistributable } from '../../Lib/Api/checkout';
+import { UserInfoCookieObject } from '../../models/auth/authModels';
+import Cookies from 'js-cookie';
 
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
@@ -23,6 +25,12 @@ const router = useRouter();
 const distributable = ref<Distributable | null>(null);
 const isEditing = ref(false);
 const dialogueShown = ref(false);
+
+const userInfo = ref<UserInfoCookieObject | null>(null);
+const cookieValue = Cookies.get('userInfo');
+if(cookieValue){
+    userInfo.value = JSON.parse(cookieValue)
+}
 
 onMounted(() => {
     fetchDistributable(id);
@@ -85,15 +93,17 @@ const addToCart = () => {
 }
 
 const checkinDistributableItem = async () => {
-    if(distributable?.value?.id){
-        const response = await checkinDistributable(distributable.value.id)
-        if(response.message){
-            toastStore.addToast(response.message, "success");
-            return;
-        }
-        if(response.error){
-            toastStore.addToast(response.error, "error");
-            return;
+    if(userInfo.value?.token){
+        if(distributable?.value?.id){
+            const response = await checkinDistributable(distributable.value.id, userInfo.value.token)
+            if(response.message){
+                toastStore.addToast(response.message, "success");
+                return;
+            }
+            if(response.error){
+                toastStore.addToast(response.error, "error");
+                return;
+            }
         }
     }
 }

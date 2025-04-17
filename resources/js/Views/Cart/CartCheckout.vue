@@ -6,6 +6,8 @@ import { useToastStore } from '../../Stores/toastStore';
 import { ref } from 'vue';
 import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vue';
 import { useRouter } from 'vue-router';
+import Cookies from "js-cookie";
+import { UserInfoCookieObject } from '../../models/auth/authModels';
 
 defineOptions({
     name: 'CartCheckout',
@@ -17,21 +19,35 @@ const router = useRouter();
 const toastStore = useToastStore();
 const clearCartDialogue = ref(false);
 
+const userInfo = ref<UserInfoCookieObject | null>(null);
+const cookieValue = Cookies.get('userInfo');
+if(cookieValue){
+    userInfo.value = JSON.parse(cookieValue)
+}
+
 const executeCheckouts = async () => {
-    let checkedOutItems = 0;
-    for(const distributable of cartState.value.cartDistributables){
-        if(cartState.value.patron?.id && distributable.id){
-            const response = await checkoutDistributable(cartState.value.patron?.id, distributable.id)
-            if(response.message){
-                checkedOutItems += 1;
-                cartStore.removeFromCart(distributable.id);
-            }
-            if(response.error){
-                toastStore.addToast(response.error, "error");
+    if(userInfo.value?.token){
+        let checkedOutItems = 0;
+        for(const distributable of cartState.value.cartDistributables){
+            if(cartState.value.patron?.id && distributable.id){
+                const response = await checkoutDistributable(cartState.value.patron?.id, distributable.id, userInfo.value.token)
+                console.log(response)
+                // if(response.message = "Unauthenticated"){
+                //     toastStore.addToast(response.message, "error");
+                // }
+                if(response.message){
+                    checkedOutItems += 1;
+                    cartStore.removeFromCart(distributable.id);
+                }
+                if(response.error){
+                    toastStore.addToast(response.error, "error");
+                }
             }
         }
+        if(checkedOutItems > 0){
+            toastStore.addToast(`${checkedOutItems} items checked out.`, "success");
+        }
     }
-    toastStore.addToast(`${checkedOutItems} items checked out.`, "success");
 };
 
 const clearCart = () => {
