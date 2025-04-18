@@ -19,7 +19,7 @@ class UnifiedDistributableController extends Controller
             $query->where('type', $request->input('type'));
         }
 
-        //
+
         if ($request->has('title')) {
             $query->where('title', 'like', '%' . $request->input('title') . '%');
         }

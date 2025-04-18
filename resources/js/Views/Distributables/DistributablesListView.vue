@@ -18,10 +18,12 @@ const newBookModalShown = ref(false);
 const sortAsc = ref('asc');
 const sortCategory = ref("distributables");
 const sortBy = ref("");
+const titleSearch = ref("");
 const { userInfo } = useUserInfo();
 
 const currentPage = ref<number>(1);
 const isNextPage = ref<boolean>(true);
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
 onMounted(() => {
     fetchDistributables();
@@ -33,7 +35,11 @@ const fetchDistributables = async () => {
     if(sortBy.value){
         url += `&sort_by=${sortBy.value}&sort_order=${sortAsc.value}`;
     }
+    if(titleSearch.value){
+        url += `&title=${titleSearch.value}`
+    }
     try {
+        console.log('url', url)
         const response = await fetch(url);
         distributables.value = await response.json();
     } catch (error) {
@@ -72,6 +78,14 @@ watch([sortCategory, currentPage], () => {
 watch(distributables, () => {
     distributables.value.length < 10 ? isNextPage.value = false : isNextPage.value = true;
 });
+
+watch(titleSearch, () => {
+    //This is a simple manual debounce for 250ms on search field change
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            fetchDistributables();
+        }, 250);
+})
 </script>
 
 <template>
@@ -104,6 +118,7 @@ watch(distributables, () => {
                     Shows
                 </label>
             </div>
+            <input class="titleSearch" v-model="titleSearch"/>
             <button v-if="userInfo?.token" v-on:click="toggleNewBookModal">New</button>
         </div>
         <div class="tableSectionWrapper">
@@ -319,6 +334,10 @@ table{
 
 .paginationWrapper{
     align-self: flex-end
+}
+
+.titleSearch{
+    width: 100%;
 }
 
 /* mobile specific styles */

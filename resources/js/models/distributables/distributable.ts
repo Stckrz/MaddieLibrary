@@ -5,7 +5,7 @@ export interface BaseDistributable {
     synopsis: string | null,
     img_url: string | null,
     thumbnail: string | null,
-    isCheckedOut: boolean,
+    isCheckedOut?: boolean,
 };
 
 export interface Book extends BaseDistributable {

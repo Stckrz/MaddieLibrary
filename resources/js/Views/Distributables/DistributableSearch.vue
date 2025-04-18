@@ -79,7 +79,6 @@ const parseSelectedCd = async (item: SpotifyAlbumItem) => {
         synopsis: '',
         artist: item.artists[0].name,
         release_date: item.release_date,
-        checked_in: true,
         img_url: item.images[0]?.url,
         thumbnail: item.images[0]?.url
     }
@@ -96,7 +95,6 @@ const parseSelectedGame = (item: GiantBombGame) => {
         synopsis: item.deck,
         release_date: item.original_release_date,
         platform: item.platforms[0].name,
-        checked_in: true,
         img_url: item.image.original_url,
         thumbnail: item.image.thumb_url,
     }
@@ -112,7 +110,6 @@ const parseSelectedMovie = (item: TmdbMovie) => {
         title: item.title,
         synopsis: item.overview,
         release_date: item.release_date,
-        checked_in: true,
         img_url: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
         thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`
     }
@@ -128,7 +125,6 @@ const parseSelectedShow = (item: TmdbShow) => {
         title: item.name,
         synopsis: item.overview,
         release_date: item.first_air_date,
-        checked_in: true,
         img_url: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
         thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`
     }
@@ -148,7 +144,6 @@ const parseSelectedBook = (item: GoogleBookItem) => {
         synopsis: item.volumeInfo.description,
         isbn: isbn?.identifier ?? null,
         published_date: item.volumeInfo.publishedDate,
-        checked_in: true,
         img_url: item.volumeInfo.imageLinks.thumbnail,
         thumbnail: item.volumeInfo.imageLinks.smallThumbnail,
     }
