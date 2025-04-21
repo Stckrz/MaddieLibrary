@@ -4,7 +4,13 @@ import { createPatron } from '../../Lib/Api/Patron/PatronApi';
 import { PatronForm } from '../../models/patrons/patronModel';
 import { useToastStore } from '../../Stores/toastStore';
 import { ref } from 'vue';
+
 const {userInfo} = useUserInfo();
+
+const {updatePatrons} = defineProps<{
+    updatePatrons: ()=>void,
+}>();
+
 const form = ref<PatronForm>(
     {
         lastName: '',
@@ -30,6 +36,7 @@ const createPatronHandler = async () => {
             card_number: '',
             email: '',
         };
+        updatePatrons();
     } catch (error) {
         console.error('Error creating patron:', error);
         toastStore.addToast("Unable to create patron", "error");

@@ -59,7 +59,6 @@ class BookController extends BaseController
             'img_url' => 'nullable|string',
             'thumbnail' => 'nullable|string',
             'isbn' => 'nullable|string',
-            'checked_in' => 'required|boolean',
         ]);
         $book = Book::create($validated);
         return response()->json([
@@ -97,7 +96,6 @@ class BookController extends BaseController
             'img_url' => 'nullable|string',
             'thumbnail' => 'nullable|string',
             'isbn' => 'nullable|string',
-            'checked_in' => 'required|boolean',
         ]);
         $book->update($validated);
         return response()->json([

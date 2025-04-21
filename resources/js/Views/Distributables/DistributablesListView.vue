@@ -3,7 +3,7 @@ import Modal from '../../Components/Modal/Modal.vue';
 import CreateDistributableView from '../Distributables/CreateDistributableView.vue';
 import Pagination from '../../Components/Pagination/Pagination.vue';
 import { FaSort } from 'vue3-icons/fa';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { Distributable } from '../../models/distributables/distributable';
 import { useMediaQuery } from '../../Composables/useMediaQuery';
 import { useUserInfo } from '../../Composables/useUserInfo';
@@ -20,6 +20,7 @@ const sortCategory = ref("distributables");
 const sortBy = ref("");
 const titleSearch = ref("");
 const { userInfo } = useUserInfo();
+const isAuthenticated = computed(() => !!userInfo.value?.token)
 
 const currentPage = ref<number>(1);
 const isNextPage = ref<boolean>(true);
@@ -118,8 +119,12 @@ watch(titleSearch, () => {
                     Shows
                 </label>
             </div>
-            <input class="titleSearch" v-model="titleSearch"/>
-            <button v-if="userInfo?.token" v-on:click="toggleNewBookModal">New</button>
+            <div class="titleSearchContainer">
+                <label for="titleSearch">Search:
+                    <input title="titleSearch" name="titleSearch" class="titleSearch" v-model="titleSearch"/>
+                </label>
+            </div>
+            <button v-if="isAuthenticated" v-on:click="toggleNewBookModal">New</button>
         </div>
         <div class="tableSectionWrapper">
             <div class="tableBox">
@@ -250,7 +255,7 @@ watch(titleSearch, () => {
                 :closeModal="toggleNewBookModal"
                 :modalShown="newBookModalShown"
             >
-                <CreateDistributableView />
+                <CreateDistributableView :updateDistributables="fetchDistributables"/>
             </Modal>
         </div>
     </div>
@@ -337,7 +342,10 @@ table{
 }
 
 .titleSearch{
-    width: 100%;
+    width: 99%;
+}
+.titleSearchContainer{
+    margin: 4px;
 }
 
 /* mobile specific styles */

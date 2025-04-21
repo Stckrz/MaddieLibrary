@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useToastStore } from '../../Stores/toastStore';
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Patron, PatronForm } from '../../models/patrons/patronModel';
 import { useCartStore } from '../../Stores/cartStore';
 import { storeToRefs } from 'pinia';
@@ -10,6 +10,7 @@ import { useUserInfo } from '../../Composables/useUserInfo';
 const cartStore = useCartStore();
 const { cartState } = storeToRefs(cartStore);
 const { userInfo } = useUserInfo();
+const isAuthenticated = computed(() => !!userInfo.value?.token)
 
 defineOptions({
     name: 'PatronDetailView',
@@ -28,7 +29,7 @@ const form = ref<PatronForm>({
 })
 
 const fetchPatronHandler = async (patronId: string) => {
-    if(userInfo.value?.token){
+    if(isAuthenticated){
         try {
             const patronData = await fetchPatronById(parseInt(patronId), userInfo.value?.token);
             patron.value = patronData;
@@ -42,7 +43,7 @@ const fetchPatronHandler = async (patronId: string) => {
     }
 }
 const editPatronHandler = async () => {
-    if(!userInfo.value?.token){
+    if(!isAuthenticated){
         toastStore.addToast("Unauthenticated", "error");
     }
     if(patron.value?.id && userInfo.value?.token){
@@ -80,7 +81,7 @@ onMounted(() => {
 
 </script>
 <template>
-    <div v-if="!userInfo?.token">Unauthorized</div>
+    <div v-if="!isAuthenticated">Unauthorized</div>
     <div v-else v-if="patron" class="bookDetailContainer">
         <h1>Patron detail page for {{ patron.firstName }} {{ patron.lastName }}</h1>
             <div class="patronTableContainer">

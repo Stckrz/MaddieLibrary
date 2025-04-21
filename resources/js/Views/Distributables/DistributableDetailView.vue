@@ -3,7 +3,7 @@ import ConfirmationBox from '../../Components/ConfirmationBox/ConfirmationBox.vu
 import Modal from '../../Components/Modal/Modal.vue';
 import EditDistributable from './EditDistributableView.vue';
 import { useToastStore } from '../../Stores/toastStore';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Distributable } from '../../models/distributables/distributable';
 import { useCartStore } from '../../Stores/cartStore';
@@ -11,6 +11,7 @@ import { storeToRefs } from 'pinia';
 import { checkinDistributable } from '../../Lib/Api/checkout';
 import { UserInfoCookieObject } from '../../models/auth/authModels';
 import Cookies from 'js-cookie';
+import { useUserInfo } from '../../Composables/useUserInfo';
 import { deleteDistributable } from '../../Lib/Api/Distributables/distributableApi';
 
 const cartStore = useCartStore();
@@ -28,11 +29,8 @@ const distributable = ref<Distributable | null>(null);
 const isEditing = ref(false);
 const dialogueShown = ref(false);
 
-const userInfo = ref<UserInfoCookieObject | null>(null);
-const cookieValue = Cookies.get('userInfo');
-if(cookieValue){
-    userInfo.value = JSON.parse(cookieValue)
-}
+const { userInfo } = useUserInfo()
+const isAuthenticated = computed(() => !!userInfo.value?.token)
 
 onMounted(() => {
     fetchDistributable(id);
@@ -178,7 +176,7 @@ const checkinDistributableItem = async () => {
                 </div>
             </div>
             </div>
-        <div class="buttonBox">
+        <div v-if="isAuthenticated" class="buttonBox">
             <button @click="toggleDialogue">Delete</button>
             <button @click="toggleEditModal">Edit</button>
             <button @click="addToCart" v-if="cartState.patron && !distributable?.isCheckedOut">Add</button>

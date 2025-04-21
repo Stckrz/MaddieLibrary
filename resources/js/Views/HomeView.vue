@@ -6,7 +6,7 @@ const isMobile = useMediaQuery('(max-width: 600px)');
 const toastStore = useToastStore();
 
 const createToast = () => {
-    console.log(isMobile.value);
+    console.log('dickbutt', isMobile.value);
     toastStore.addToast("Hello I am a toast!", "success");
 };
 

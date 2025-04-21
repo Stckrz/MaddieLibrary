@@ -12,6 +12,10 @@ defineOptions({
     name: 'CreateDistributable',
 });
 
+const {updateDistributables} = defineProps<{
+    updateDistributables: ()=>void,
+}>();
+
 const distributableType = ref("Book");
 const gamePlatform = ref('PC');
 const form = ref<FormFields>({
@@ -66,6 +70,7 @@ const createDistributableHandler = async() => {
                 isbn: null,
             };
             toastStore.addToast("Distributable created successfully!", "success");
+            updateDistributables();
         } catch (error) {
             console.error('Error creating distributable:', error);
             toastStore.addToast("Unable to create distributable", "error");

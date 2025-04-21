@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import CreatePatronView from './CreatePatronView.vue';
 import Modal from '../../Components/Modal/Modal.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Patron } from '../../models/patrons/patronModel';
 import { useMediaQuery } from '../../Composables/useMediaQuery';
 import { useUserInfo } from '../../Composables/useUserInfo';
@@ -15,6 +15,7 @@ const isMobile = useMediaQuery('(max-width: 600px)');
 const patrons = ref<Patron[]>([]);
 const newPatronModalShown = ref(false);
 const {userInfo} = useUserInfo();
+const isAuthenticated = computed(() => !!userInfo.value?.token)
 
 const fetchPatronsHandler = async () => {
     if(userInfo.value?.token){
@@ -38,7 +39,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div v-if="!userInfo?.token">Unauthorized</div>
+    <div v-if="!isAuthenticated">Unauthorized</div>
     <div v-else class="patronListContainer">
         <div class="patronHeaderBox">
             <h1 class="color-red-950 m-1000">Patrons</h1>
@@ -94,7 +95,7 @@ onMounted(() => {
             </tbody>
         </table>
         <Modal :closeModal="toggleNewPatronModal" :modalShown="newPatronModalShown">
-            <CreatePatronView />
+            <CreatePatronView :updatePatrons="fetchPatronsHandler"/>
         </Modal>
     </div>
 </template>
