@@ -40,7 +40,6 @@ const fetchDistributables = async () => {
         url += `&title=${titleSearch.value}`
     }
     try {
-        console.log('url', url)
         const response = await fetch(url);
         distributables.value = await response.json();
     } catch (error) {
